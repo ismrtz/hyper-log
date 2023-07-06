@@ -1,0 +1,32 @@
+name: hyper_log
+description: A new Flutter project.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=2.19.4 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+  - family: VazirMatn
+    fonts: 
+    - asset: assets/fonts/Vazirmatn-UI-FD-Thin.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-ExtraLight.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-Light.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-regular.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-Medium.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-SemiBold.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-Bold.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-ExtraBold.ttf
+    - asset: assets/fonts/Vazirmatn-UI-FD-Black.ttf
+      weight: 900
