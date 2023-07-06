@@ -15,7 +15,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Color.fromRGBO(7, 19, 17, 1),
+        color: const Color.fromRGBO(7, 19, 17, 1),
         padding: const EdgeInsets.all(24),
         child: SafeArea(
           child: Column(
@@ -24,7 +24,7 @@ class Home extends StatelessWidget {
                 ExpenseAccount(balance),
                 IconButton(
                     onPressed: _notificationTap,
-                    icon: Icon(
+                    icon: const Icon(
                       size: 32,
                       color: Colors.grey,
                       Icons.notifications_active_outlined,

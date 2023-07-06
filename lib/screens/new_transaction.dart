@@ -12,7 +12,33 @@ class NewTransaction extends StatefulWidget {
 class _NewTransactionState extends State<NewTransaction> {
   final _amountController = TextEditingController(text: '0');
 
-  List<bool> isCardEnabled = [];
+  List<Map> buttonsList = [
+    {
+      'selected': true,
+      'name': 'payment',
+      'label': 'پرداختی',
+      'icon': Icons.arrow_outward,
+      'color': const Color.fromRGBO(255, 51, 402, 1),
+    },
+    {
+      'label': 'انتقال',
+      'selected': false,
+      'name': 'transfer',
+      'icon': Icons.swap_horiz,
+      'color': const Color.fromRGBO(51, 187, 255, 1),
+    },
+    {
+      'name': 'receipt',
+      'selected': false,
+      'label': 'دریافتی',
+      'icon': Icons.arrow_downward,
+      'color': const Color.fromRGBO(40, 204, 158, 1),
+    },
+  ];
+
+  dynamic get selectedTransactionType {
+    return buttonsList.where((button) => button['selected']).toList();
+  }
 
   void _closeScreen(BuildContext context) {
     Navigator.of(context).pop();
@@ -55,22 +81,22 @@ class _NewTransactionState extends State<NewTransaction> {
                       textDirection: TextDirection.rtl,
                       child: TextField(
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          focusedBorder: UnderlineInputBorder(
+                        decoration: InputDecoration(
+                          focusedBorder: const UnderlineInputBorder(
                               borderSide: BorderSide(
                                   color: Color.fromRGBO(25, 107, 105, 1))),
                           suffixText: 'تومان',
                           prefixText: 'مبلغ:',
                           prefixStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
+                              const TextStyle(color: Colors.grey, fontSize: 16),
                           suffixStyle: TextStyle(
-                              color: Colors.grey,
+                              color: selectedTransactionType[0]['color'],
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 28,
-                          color: Colors.grey,
+                          color: selectedTransactionType[0]['color'],
                           fontWeight: FontWeight.bold,
                         ),
                         autofocus: true,
@@ -80,24 +106,51 @@ class _NewTransactionState extends State<NewTransaction> {
                     )
                   ]),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: TextButton.icon(
-                        style: const ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll(
-                                Color.fromRGBO(19, 47, 43, 1))),
-                        onPressed: () {},
-                        icon: Icon(Icons.arrow_outward),
-                        label: Text('پرداختی'))),
-              ],
+            Container(
+              height: 44,
+              margin: const EdgeInsets.only(top: 16),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 0,
+                    childAspectRatio: 1 / 0.4),
+                itemCount: buttonsList.length,
+                itemBuilder: (context, index) {
+                  return Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: TextButton.icon(
+                          style: ButtonStyle(
+                              shape: MaterialStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16))),
+                              backgroundColor: MaterialStatePropertyAll(
+                                  buttonsList[index]['selected']
+                                      ? const Color.fromRGBO(19, 47, 43, 1)
+                                      : Colors.transparent)),
+                          onPressed: () {
+                            buttonsList.forEach(
+                                (button) => button['selected'] = false);
+                            buttonsList[index]['selected'] = true;
+                            setState(() {});
+                          },
+                          icon: Icon(
+                            buttonsList[index]['icon'],
+                            color: buttonsList[index]['color'],
+                          ),
+                          label: Text(
+                            buttonsList[index]['label'],
+                            style: TextStyle(
+                                color: buttonsList[index]['selected']
+                                    ? Colors.grey[100]
+                                    : Colors.grey),
+                          )));
+                },
+              ),
             )
           ]),
         ),
       ),
     );
-    ;
   }
 }
