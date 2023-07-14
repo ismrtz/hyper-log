@@ -24,8 +24,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'VazirMatn',
-      ),
+          fontFamily: 'VazirMatn',
+          bottomSheetTheme:
+              const BottomSheetThemeData(dragHandleColor: Colors.grey)),
       home: const Directionality(
           textDirection: TextDirection.rtl, child: Dashboard()),
       routes: {

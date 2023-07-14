@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/home/expense-account.dart';
+import '../widgets/home/expense_account.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});

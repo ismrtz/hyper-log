@@ -1,4 +1,7 @@
+import '../models/category.dart';
 import 'package:flutter/material.dart';
+import '../data/default_categories.dart';
+import '../services/categories_sqlite_service.dart';
 
 //screens
 import './home.dart';
@@ -16,13 +19,36 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   late List<Widget> _pages;
+  late List<Category> categories;
+  late CategoriesSqliteService _categoriesSqliteService;
+
   int _selectedPageIndex = 0;
 
   @override
   void initState() {
     _pages = [const Home(), const Transactions(), const Tools(), const More()];
-
     super.initState();
+
+    _categoriesSqliteService = CategoriesSqliteService();
+
+    _categoriesSqliteService.initializeDB().whenComplete(() {
+      getCategories().whenComplete(() {
+        if (categories.isEmpty) {
+          for (var i = 0; i < defaultCategories.length; i++) {
+            addCategory(defaultCategories[i]);
+          }
+        }
+      });
+    });
+  }
+
+  Future<void> getCategories() async {
+    final result = await _categoriesSqliteService.getCategories(null);
+    categories = result;
+  }
+
+  Future<void> addCategory(Category category) async {
+    return await _categoriesSqliteService.insertCategory(category);
   }
 
   void _selectPage(int index) {

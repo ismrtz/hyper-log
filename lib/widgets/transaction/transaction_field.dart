@@ -1,3 +1,4 @@
+// packages
 import 'package:flutter/material.dart';
 
 class TransactionField extends StatelessWidget {
@@ -10,7 +11,7 @@ class TransactionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTapTransaction(field['name']),
+      onTap: () => onTapTransaction(context, field['name']),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -28,18 +29,31 @@ class TransactionField extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        field['label'],
-                        style:
-                            const TextStyle(color: Colors.grey, fontSize: 16),
+                        field['title'],
+                        style: TextStyle(
+                            color: field.containsKey('color')
+                                ? Colors.grey[200]
+                                : Colors.grey,
+                            fontSize: 16),
                       ),
                       Container(
                           margin: const EdgeInsets.only(left: 12),
-                          child: Icon(
-                            field['icon'],
-                            color: field.containsKey('color')
-                                ? field['color']
-                                : Colors.grey,
-                            size: 32,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: field.containsKey('color')
+                                  ? Color(int.parse(field['color']))
+                                  : Colors.transparent,
+                            ),
+                            child: Icon(
+                              IconData(int.parse(field['icon']),
+                                  fontFamily: 'MaterialIcons'),
+                              color: field.containsKey('color')
+                                  ? Colors.white
+                                  : Colors.grey,
+                            ),
                           )),
                     ],
                   ),

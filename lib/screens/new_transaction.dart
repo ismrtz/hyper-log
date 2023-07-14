@@ -1,7 +1,15 @@
+// packages
 import 'package:flutter/material.dart';
 
+// models
+import '../models/category.dart';
+
 // widgets
+import '../widgets/category/category_list.dart';
 import '../widgets/transaction/transaction_field.dart';
+
+// services
+import '../../services/categories_sqlite_service.dart';
 
 class NewTransaction extends StatefulWidget {
   const NewTransaction({super.key});
@@ -15,8 +23,13 @@ class NewTransaction extends StatefulWidget {
 class _NewTransactionState extends State<NewTransaction> {
   final _amountController = TextEditingController(text: '0');
 
+  late Category selectedCategory;
+  late List<Category> categories;
+  late CategoriesSqliteService _categoriesSqliteService;
+
   List<Map> buttonsList = [
     {
+      'type': 0,
       'selected': true,
       'name': 'payment',
       'label': 'پرداختی',
@@ -31,6 +44,7 @@ class _NewTransactionState extends State<NewTransaction> {
       'color': const Color.fromRGBO(51, 187, 255, 1),
     },
     {
+      'type': 1,
       'name': 'receipt',
       'selected': false,
       'label': 'دریافتی',
@@ -42,20 +56,34 @@ class _NewTransactionState extends State<NewTransaction> {
   List paymentFields = [
     {
       'name': 'category',
-      'label': 'دسته‌بندی پرداختی',
-      'icon': Icons.grid_view_outlined,
+      'title': 'دسته‌بندی پرداختی',
+      'icon': '0xf0d7',
     },
     {
       'name': 'resource',
-      'label': 'نام منبع خرج',
-      'icon': Icons.account_balance_wallet_outlined,
+      'title': 'نام منبع خرج',
+      'icon': '0xee33',
     },
-    {
-      'name': 'label',
-      'label': 'برچسب‌ها',
-      'icon': Icons.label_outline,
-    },
+    // {
+    //   'name': 'label',
+    //   'title': 'برچسب‌ها',
+    //   'icon': '0xe364',
+    // },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesSqliteService = CategoriesSqliteService();
+    getCategories(selectedTransactionType[0]['type']);
+  }
+
+  Future<void> getCategories(int type) async {
+    final result = await _categoriesSqliteService.getCategories(type);
+    setState(() {
+      categories = result;
+    });
+  }
 
   dynamic get selectedTransactionType {
     return buttonsList.where((button) => button['selected']).toList();
@@ -65,8 +93,29 @@ class _NewTransactionState extends State<NewTransaction> {
     Navigator.of(context).pop();
   }
 
-  void tapTransactionField(String fieldName) {
-    print(fieldName);
+  void tapTransactionField(BuildContext context, String fieldName) {
+    showModalBottomSheet(
+        showDragHandle: true,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24), topRight: Radius.circular(24))),
+        backgroundColor: const Color.fromRGBO(12, 29, 27, 1),
+        context: context,
+        builder: (_) {
+          return GestureDetector(
+              child: CategoryList(
+            categories: categories,
+            selectCategory: selectCategory,
+          ));
+        });
+  }
+
+  void selectCategory(Category category) {
+    setState(() {
+      paymentFields[0]['icon'] = category.icon;
+      paymentFields[0]['title'] = category.title;
+      paymentFields[0]['color'] = category.color;
+    });
   }
 
   @override
@@ -164,7 +213,8 @@ class _NewTransactionState extends State<NewTransaction> {
                                   buttonsList.forEach(
                                       (button) => button['selected'] = false);
                                   buttonsList[index]['selected'] = true;
-                                  setState(() {});
+                                  getCategories(
+                                      selectedTransactionType[0]['type']);
                                 },
                                 icon: Icon(
                                   buttonsList[index]['icon'],
@@ -195,8 +245,9 @@ class _NewTransactionState extends State<NewTransaction> {
                   child: Column(
                     children: paymentFields
                         .map((field) => TransactionField(
-                            field: field,
-                            onTapTransaction: tapTransactionField))
+                              field: field,
+                              onTapTransaction: tapTransactionField,
+                            ))
                         .toList(),
                   )),
             ),
