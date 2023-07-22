@@ -86,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
               icon: Icon(Icons.home_outlined),
             ),
             BottomNavigationBarItem(
-              label: 'تراکنش',
+              label: 'تراکنش‌ها',
               activeIcon: Icon(Icons.receipt_long),
               icon: Icon(Icons.receipt_long_outlined),
             ),

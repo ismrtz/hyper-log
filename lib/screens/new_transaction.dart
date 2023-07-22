@@ -21,9 +21,10 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-  final _amountController = TextEditingController(text: '0');
+  final _amountController = TextEditingController();
 
-  late Category selectedCategory;
+  late String action;
+  // late Category selectedCategory;
   late List<Category> categories;
   late CategoriesSqliteService _categoriesSqliteService;
 
@@ -71,6 +72,13 @@ class _NewTransactionState extends State<NewTransaction> {
     // },
   ];
 
+  // @override
+  // void didChangeDependencies() {
+  //   final routeArgs = ModalRoute.of(context)?.settings.arguments as Map;
+  //   action = routeArgs['action'];
+  //   super.didChangeDependencies();
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -78,7 +86,7 @@ class _NewTransactionState extends State<NewTransaction> {
     getCategories(selectedTransactionType[0]['type']);
   }
 
-  Future<void> getCategories(int type) async {
+  Future<void> getCategories(type) async {
     final result = await _categoriesSqliteService.getCategories(type);
     setState(() {
       categories = result;
@@ -160,6 +168,12 @@ class _NewTransactionState extends State<NewTransaction> {
                             child: TextField(
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
+                                hintStyle:
+                                    const TextStyle(color: Colors.white54),
+                                hintText: '0',
+                                enabledBorder: const UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent)),
                                 focusedBorder: const UnderlineInputBorder(
                                     borderSide:
                                         BorderSide(color: Colors.transparent)),
@@ -210,8 +224,9 @@ class _NewTransactionState extends State<NewTransaction> {
                                                 19, 47, 43, 1)
                                             : Colors.transparent)),
                                 onPressed: () {
-                                  buttonsList.forEach(
-                                      (button) => button['selected'] = false);
+                                  for (var button in buttonsList) {
+                                    button['selected'] = false;
+                                  }
                                   buttonsList[index]['selected'] = true;
                                   getCategories(
                                       selectedTransactionType[0]['type']);

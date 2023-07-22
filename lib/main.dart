@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 //screens
 import './screens/dashboard.dart';
 import './screens/new_transaction.dart';
+import './screens/resources/resources.dart';
+import './screens/categories/categories.dart';
+import './screens//resources/new_resource.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,9 @@ class MainApp extends StatelessWidget {
           textDirection: TextDirection.rtl, child: Dashboard()),
       routes: {
         NewTransaction.routeName: (context) => const NewTransaction(),
+        Resources.routeName: (context) => const Resources(),
+        Categories.routeName: (context) => const Categories(),
+        NewResource.routeName: (context) => const NewResource()
       },
     );
   }

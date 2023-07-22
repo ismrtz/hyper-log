@@ -37,7 +37,7 @@ class ExpenseAccount extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(
+                const Text(
                   'تومان',
                   style: TextStyle(
                     fontSize: 14,
