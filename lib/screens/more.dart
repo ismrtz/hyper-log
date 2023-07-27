@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // widgets
-import '../widgets/more/menu_item.dart';
-import '../widgets/home/expense_account.dart';
+import 'package:hyper_log/widgets/more/menu_item.dart';
+import 'package:hyper_log/widgets/home/expense_account.dart';
 
 class More extends StatefulWidget {
   const More({super.key});

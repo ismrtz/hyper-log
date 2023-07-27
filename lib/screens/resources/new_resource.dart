@@ -5,6 +5,15 @@ import 'package:flutter/material.dart';
 import './bank_resource_list.dart';
 import './cash_resource_list.dart';
 
+// models
+import 'package:hyper_log/models/resource.dart';
+
+// services
+import 'package:hyper_log/services/resources_sqlite_service.dart';
+
+// screens
+import '../dashboard.dart';
+
 class NewResource extends StatefulWidget {
   const NewResource({super.key});
 
@@ -17,11 +26,6 @@ class NewResource extends StatefulWidget {
 class _NewResourceState extends State<NewResource> {
   bool isBank = true;
 
-  final _formKey = GlobalKey<FormState>();
-  final _resourceTitleController = TextEditingController();
-  final _amountController = TextEditingController(text: '0');
-  final _cardNumberController = TextEditingController(text: '-');
-  final _accountNumberController = TextEditingController(text: '-');
   Map selectedResource = {
     'title': 'نام منبع خرج',
     'icon': '0xee33',
@@ -30,6 +34,21 @@ class _NewResourceState extends State<NewResource> {
   Map selectedIcon = {
     'icon': '0xee33',
   };
+
+  final _formKey = GlobalKey<FormState>();
+  final _resourceTitleController = TextEditingController();
+  final _amountController = TextEditingController(text: '0');
+  final _cardNumberController = TextEditingController(text: '-');
+  final _accountNumberController = TextEditingController(text: '-');
+
+  late ResourcesSqliteService _resourcesSqliteService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _resourcesSqliteService = ResourcesSqliteService();
+  }
 
   void _closeScreen(BuildContext context) {
     Navigator.of(context).pop();
@@ -85,6 +104,46 @@ class _NewResourceState extends State<NewResource> {
     setState(() {
       selectedIcon = icon;
     });
+  }
+
+  Future<void> addBankResource() async {
+    if (selectedResource['color'] != null) {
+      final bankResource = Resource(
+          title: selectedResource['title'],
+          type: 1,
+          icon: selectedResource['icon'],
+          color: selectedResource['color'],
+          card: _cardNumberController.text.toString(),
+          account: _accountNumberController.text.toString());
+
+      return await _resourcesSqliteService.initializeDB().whenComplete(() =>
+          _resourcesSqliteService.insertResource(bankResource).whenComplete(() {
+            showSuccessfulMessage();
+            Navigator.of(context).pushNamed("/");
+          }));
+    }
+  }
+
+  Future<void> addCashResource() async {
+    if (selectedIcon['color'] != null) {
+      final cashResource = Resource(
+          title: _resourceTitleController.text,
+          type: 0,
+          icon: selectedIcon['icon'],
+          color: selectedIcon['color']);
+
+      return await _resourcesSqliteService.initializeDB().whenComplete(() =>
+          _resourcesSqliteService.insertResource(cashResource).whenComplete(() {
+            showSuccessfulMessage();
+            Navigator.of(context).pushNamed("/");
+          }));
+    }
+  }
+
+  void showSuccessfulMessage() {
+    const snackBar = SnackBar(content: Text('✅ منبع با موفقیت ساخته شد'));
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -384,7 +443,7 @@ class _NewResourceState extends State<NewResource> {
                                           borderSide: BorderSide(
                                               color: Colors.transparent)),
                                     ),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
@@ -444,11 +503,7 @@ class _NewResourceState extends State<NewResource> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(40, 204, 158, 1),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            print('sending data');
-          }
-        },
+        onPressed: isBank ? addBankResource : addCashResource,
         child: const Icon(Icons.done),
       ),
     );

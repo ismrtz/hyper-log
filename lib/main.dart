@@ -7,7 +7,8 @@ import './screens/dashboard.dart';
 import './screens/new_transaction.dart';
 import './screens/resources/resources.dart';
 import './screens/categories/categories.dart';
-import './screens//resources/new_resource.dart';
+import './screens/resources/new_resource.dart';
+import './screens/categories/new_category.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +37,8 @@ class MainApp extends StatelessWidget {
         NewTransaction.routeName: (context) => const NewTransaction(),
         Resources.routeName: (context) => const Resources(),
         Categories.routeName: (context) => const Categories(),
-        NewResource.routeName: (context) => const NewResource()
+        NewResource.routeName: (context) => const NewResource(),
+        NewCategory.routeName: (context) => const NewCategory()
       },
     );
   }

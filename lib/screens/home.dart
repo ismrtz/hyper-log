@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // widgets
-import '../widgets/home/expense_account.dart';
+import 'package:hyper_log/widgets/home/expense_account.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});

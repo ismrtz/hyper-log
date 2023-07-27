@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 // models
-import '../models/category.dart';
+import 'package:hyper_log/models/category.dart';
 
 // widgets
-import '../widgets/category/category_list.dart';
-import '../widgets/transaction/transaction_field.dart';
+import 'package:hyper_log/widgets/category/category_list.dart';
+import 'package:hyper_log/widgets/transaction/transaction_field.dart';
 
 // services
 import '../../services/categories_sqlite_service.dart';

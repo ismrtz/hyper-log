@@ -1,7 +1,9 @@
-import '../models/category.dart';
 import 'package:flutter/material.dart';
-import '../data/default_categories.dart';
-import '../services/categories_sqlite_service.dart';
+import 'package:hyper_log/models/category.dart';
+import 'package:hyper_log/data/default_categories.dart';
+import 'package:hyper_log/services/splite_service.dart';
+import 'package:hyper_log/services/categories_sqlite_service.dart';
+import 'package:hyper_log/services/resources_sqlite_service.dart';
 
 //screens
 import './home.dart';
@@ -13,6 +15,8 @@ import './new_transaction.dart';
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
+  static const routeName = '/';
+
   @override
   State<Dashboard> createState() => _DashboardState();
 }
@@ -20,7 +24,9 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   late List<Widget> _pages;
   late List<Category> categories;
+  late ResourcesSqliteService _resourcesSqliteService;
   late CategoriesSqliteService _categoriesSqliteService;
+  late SqliteService _sqliteService;
 
   int _selectedPageIndex = 0;
 
@@ -29,9 +35,11 @@ class _DashboardState extends State<Dashboard> {
     _pages = [const Home(), const Transactions(), const Tools(), const More()];
     super.initState();
 
+    _sqliteService = SqliteService();
     _categoriesSqliteService = CategoriesSqliteService();
+    _resourcesSqliteService = ResourcesSqliteService();
 
-    _categoriesSqliteService.initializeDB().whenComplete(() {
+    _sqliteService.initializeDB().whenComplete(() {
       getCategories().whenComplete(() {
         if (categories.isEmpty) {
           for (var i = 0; i < defaultCategories.length; i++) {
@@ -39,12 +47,19 @@ class _DashboardState extends State<Dashboard> {
           }
         }
       });
+
+      getResources();
     });
   }
 
   Future<void> getCategories() async {
     final result = await _categoriesSqliteService.getCategories(null);
     categories = result;
+  }
+
+  Future<void> getResources() async {
+    final results = await _resourcesSqliteService.getResources(null);
+    print(results);
   }
 
   Future<void> addCategory(Category category) async {
