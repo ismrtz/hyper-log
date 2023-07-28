@@ -1,16 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:hyper_log/models/category.dart';
-import 'package:hyper_log/data/default_categories.dart';
-import 'package:hyper_log/services/splite_service.dart';
-import 'package:hyper_log/services/categories_sqlite_service.dart';
-import 'package:hyper_log/services/resources_sqlite_service.dart';
-
 //screens
 import './home.dart';
 import './more.dart';
 import './tools.dart';
 import './transactions.dart';
 import './new_transaction.dart';
+
+//packages
+import 'package:flutter/material.dart';
+
+//models
+import 'package:hyper_log/models/category.dart';
+
+//data
+import 'package:hyper_log/data/default_categories.dart';
+
+//services
+import 'package:hyper_log/services/splite_service.dart';
+import 'package:hyper_log/services/categories_sqlite_service.dart';
+import 'package:hyper_log/services/resources_sqlite_service.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});

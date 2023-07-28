@@ -19,17 +19,12 @@ class ResourcesSqliteService {
   }
 
   Future<void> insertResource(Resource resource) async {
-    print(resource);
     final Database db = await initializeDB();
-    try {
-      await db.insert(
-        'Resources',
-        resource.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    } catch (e) {
-      print(e);
-    }
+    await db.insert(
+      'Resources',
+      resource.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<List<Resource>> getResources(type) async {

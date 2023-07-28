@@ -119,7 +119,7 @@ class _NewResourceState extends State<NewResource> {
       return await _resourcesSqliteService.initializeDB().whenComplete(() =>
           _resourcesSqliteService.insertResource(bankResource).whenComplete(() {
             showSuccessfulMessage();
-            Navigator.of(context).pushNamed("/");
+            Navigator.of(context).pushNamed(Dashboard.routeName);
           }));
     }
   }
@@ -135,7 +135,7 @@ class _NewResourceState extends State<NewResource> {
       return await _resourcesSqliteService.initializeDB().whenComplete(() =>
           _resourcesSqliteService.insertResource(cashResource).whenComplete(() {
             showSuccessfulMessage();
-            Navigator.of(context).pushNamed("/");
+            Navigator.of(context).pushNamed(Dashboard.routeName);
           }));
     }
   }

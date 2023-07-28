@@ -1,5 +1,5 @@
 // models
-import '../models/category.dart';
+import 'package:hyper_log/models/category.dart';
 // packages
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -9,11 +9,12 @@ class CategoriesSqliteService {
     String path = await getDatabasesPath();
 
     return openDatabase(join(path, 'database.db'),
-        onCreate: (database, version) async {
-      await database.execute(
-        'CREATE TABLE Categories(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, type INTEGER NOT NULL, icon INTEGER NOT NULL, color TEXT NOT NULL)',
-      );
-    }, version: 1);
+        //     onCreate: (database, version) async {
+        //   await database.execute(
+        //     'CREATE TABLE Categories(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, type INTEGER NOT NULL, icon INTEGER NOT NULL, color TEXT NOT NULL)',
+        //   );
+        // },
+        version: 1);
   }
 
   Future<void> insertCategory(Category category) async {

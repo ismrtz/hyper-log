@@ -112,6 +112,7 @@ class _NewTransactionState extends State<NewTransaction> {
         builder: (_) {
           return GestureDetector(
               child: CategoryList(
+            height: 360,
             categories: categories,
             selectCategory: selectCategory,
           ));

@@ -9,15 +9,19 @@ import './category_card.dart';
 
 class CategoryList extends StatelessWidget {
   const CategoryList(
-      {required this.categories, required this.selectCategory, super.key});
+      {required this.height,
+      required this.categories,
+      required this.selectCategory,
+      super.key});
 
+  final double height;
   final Function selectCategory;
   final List<Category> categories;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 360,
+        height: height,
         child: ListView.builder(
             padding: const EdgeInsets.all(24),
             itemCount: categories.length,

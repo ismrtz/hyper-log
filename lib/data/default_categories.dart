@@ -1,4 +1,4 @@
-import '../models/category.dart';
+import 'package:hyper_log/models/category.dart';
 
 final defaultCategories = [
   Category(title: 'اینترنت', type: 0, icon: '0xf14f', color: '0xFF2196F3'),
