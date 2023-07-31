@@ -160,7 +160,7 @@ class _NewResourceState extends State<NewResource> {
   Future<void> addResourceAmountTxn(List resources) async {
     final transaction = model.Transaction(
       amount: int.parse(_amountController.text),
-      categoryId: 1,
+      categoryId: 5,
       resourceId: resources.isEmpty ? 1 : resources.length,
       createdAt: dateTimeNow(),
       description: '',
