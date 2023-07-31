@@ -25,7 +25,7 @@ class Resource {
       'icon': icon,
       'color': color,
       'card': card,
-      'account': account
+      'account': account,
     };
   }
 

@@ -9,13 +9,7 @@ class ResourcesSqliteService {
   Future initializeDB() async {
     String path = await getDatabasesPath();
 
-    return openDatabase(join(path, 'database.db'),
-        //     onCreate: (database, version) async {
-        //   await database.execute(
-        //     'CREATE TABLE Resources(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, type INTEGER NOT NULL, icon INTEGER NOT NULL, color TEXT NOT NULL, card TEXT, account TEXT)',
-        //   );
-        // },
-        version: 1);
+    return openDatabase(join(path, 'database.db'), version: 1);
   }
 
   Future<void> insertResource(Resource resource) async {

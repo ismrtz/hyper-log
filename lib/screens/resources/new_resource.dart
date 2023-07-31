@@ -7,9 +7,11 @@ import './cash_resource_list.dart';
 
 // models
 import 'package:hyper_log/models/resource.dart';
+import 'package:hyper_log/models/transaction.dart' as model;
 
 // services
 import 'package:hyper_log/services/resources_sqlite_service.dart';
+import 'package:hyper_log/services/transactions_sqlite_service.dart';
 
 // screens
 import '../dashboard.dart';
@@ -38,16 +40,18 @@ class _NewResourceState extends State<NewResource> {
   final _formKey = GlobalKey<FormState>();
   final _resourceTitleController = TextEditingController();
   final _amountController = TextEditingController(text: '0');
-  final _cardNumberController = TextEditingController(text: '-');
-  final _accountNumberController = TextEditingController(text: '-');
+  final _cardNumberController = TextEditingController(text: '0');
+  final _accountNumberController = TextEditingController(text: '0');
 
   late ResourcesSqliteService _resourcesSqliteService;
+  late TransactionsSqliteService _transactionsSqliteService;
 
   @override
   void initState() {
     super.initState();
 
     _resourcesSqliteService = ResourcesSqliteService();
+    _transactionsSqliteService = TransactionsSqliteService();
   }
 
   void _closeScreen(BuildContext context) {
@@ -107,41 +111,65 @@ class _NewResourceState extends State<NewResource> {
   }
 
   Future<void> addBankResource() async {
-    if (selectedResource['color'] != null) {
+    if (_formKey.currentState!.validate() ||
+        selectedResource['color'] != null) {
       final bankResource = Resource(
-          title: selectedResource['title'],
-          type: 1,
-          icon: selectedResource['icon'],
-          color: selectedResource['color'],
-          card: _cardNumberController.text.toString(),
-          account: _accountNumberController.text.toString());
+        title: selectedResource['title'],
+        type: 1,
+        icon: selectedResource['icon'],
+        color: selectedResource['color'],
+        card: _cardNumberController.text,
+        account: _accountNumberController.text,
+      );
 
       return await _resourcesSqliteService.initializeDB().whenComplete(() =>
-          _resourcesSqliteService.insertResource(bankResource).whenComplete(() {
-            showSuccessfulMessage();
-            Navigator.of(context).pushNamed(Dashboard.routeName);
-          }));
+          _resourcesSqliteService
+              .insertResource(bankResource)
+              .whenComplete(() => getResources()));
     }
   }
 
   Future<void> addCashResource() async {
-    if (selectedIcon['color'] != null) {
+    if (_formKey.currentState!.validate() && selectedIcon['color'] != null) {
       final cashResource = Resource(
           title: _resourceTitleController.text,
           type: 0,
           icon: selectedIcon['icon'],
           color: selectedIcon['color']);
 
-      return await _resourcesSqliteService.initializeDB().whenComplete(() =>
-          _resourcesSqliteService.insertResource(cashResource).whenComplete(() {
-            showSuccessfulMessage();
-            Navigator.of(context).pushNamed(Dashboard.routeName);
-          }));
+      return await _resourcesSqliteService
+          .insertResource(cashResource)
+          .whenComplete(() => getResources());
     }
   }
 
+  Future<void> getResources() async {
+    final result = await _resourcesSqliteService.getResources(null);
+    addResourceAmountTxn(result).whenComplete(() {
+      showSuccessfulMessage();
+      Navigator.of(context).pop();
+    });
+  }
+
+  String dateTimeNow() {
+    DateTime now = DateTime.now();
+
+    return "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
+  }
+
+  Future<void> addResourceAmountTxn(List resources) async {
+    final transaction = model.Transaction(
+      amount: int.parse(_amountController.text),
+      categoryId: 1,
+      resourceId: resources.isEmpty ? 1 : resources.length,
+      createdAt: dateTimeNow(),
+      description: '',
+    );
+    return await _transactionsSqliteService.insertTransaction(transaction);
+  }
+
   void showSuccessfulMessage() {
-    const snackBar = SnackBar(content: Text('✅ منبع با موفقیت ساخته شد'));
+    const snackBar = SnackBar(content: Text('منبع با موفقیت ساخته شد✅'));
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -255,244 +283,277 @@ class _NewResourceState extends State<NewResource> {
                         ],
                       ),
                       Container(
-                        margin: const EdgeInsets.only(top: 32),
-                        child: isBank
-                            ? Form(
-                                //TODO: add form validation
-                                key: _formKey,
-                                child: Column(children: [
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      splashColor:
-                                          const Color.fromRGBO(15, 36, 34, 1),
-                                      onTap: () => _tapResourceBank(context),
-                                      child: Row(children: [
-                                        Container(
-                                            width: 48,
-                                            height: 48,
-                                            decoration: BoxDecoration(
+                          margin: const EdgeInsets.only(top: 32),
+                          child: Form(
+                            key: _formKey,
+                            child: isBank
+                                ? Column(children: [
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        splashColor:
+                                            const Color.fromRGBO(15, 36, 34, 1),
+                                        onTap: () => _tapResourceBank(context),
+                                        child: Row(children: [
+                                          Container(
+                                              width: 48,
+                                              height: 48,
+                                              decoration: BoxDecoration(
+                                                  color: selectedResource[
+                                                              'color'] !=
+                                                          null
+                                                      ? Color(int.parse(
+                                                          selectedResource[
+                                                              'color']))
+                                                      : Colors.transparent,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          24)),
+                                              margin: const EdgeInsets.only(
+                                                  left: 12),
+                                              child: Icon(
+                                                IconData(
+                                                    int.parse(selectedResource[
+                                                        'icon']),
+                                                    fontFamily:
+                                                        'MaterialIcons'),
+                                                size: 32,
                                                 color:
                                                     selectedResource['color'] !=
                                                             null
-                                                        ? Color(int.parse(
-                                                            selectedResource[
-                                                                'color']))
-                                                        : Colors.transparent,
-                                                borderRadius:
-                                                    BorderRadius.circular(24)),
-                                            margin:
-                                                const EdgeInsets.only(left: 12),
-                                            child: Icon(
-                                              IconData(
-                                                  int.parse(
-                                                      selectedResource['icon']),
-                                                  fontFamily: 'MaterialIcons'),
-                                              size: 32,
-                                              color:
-                                                  selectedResource['color'] !=
-                                                          null
-                                                      ? Colors.white
-                                                      : Colors.white54,
-                                            )),
-                                        Text(
-                                          selectedResource['title'],
-                                          style: TextStyle(
-                                              color:
-                                                  selectedResource['color'] !=
-                                                          null
-                                                      ? Colors.white
-                                                      : Colors.white54,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ]),
-                                    ),
-                                  ),
-                                  Divider(
-                                    color: Colors.grey[800],
-                                  ),
-                                  TextFormField(
-                                    validator: (value) => value == null ||
-                                            value.isEmpty ||
-                                            value == '0'
-                                        ? 'موجودی نمی‌تواند خالی باشد'
-                                        : null,
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      suffixText: 'تومان',
-                                      prefixText: 'موجودی:',
-                                      prefixStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                      suffixStyle: TextStyle(
-                                          color:
-                                              Color.fromRGBO(40, 204, 158, 1),
-                                          fontSize: 16,
-                                          wordSpacing: 24,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 28,
-                                      color: Color.fromRGBO(40, 204, 158, 1),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    controller: _amountController,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  Divider(
-                                    color: Colors.grey[800],
-                                  ),
-                                  TextField(
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      prefixText: 'شماره کارت:',
-                                      prefixStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white54,
-                                    ),
-                                    controller: _cardNumberController,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  Divider(
-                                    color: Colors.grey[800],
-                                  ),
-                                  TextField(
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      prefixText: 'شماره حساب:',
-                                      prefixStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white54,
-                                    ),
-                                    controller: _accountNumberController,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ]),
-                              )
-                            : Column(
-                                children: [
-                                  TextField(
-                                    keyboardType: TextInputType.name,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Container(
-                                        margin: const EdgeInsets.only(left: 12),
-                                        width: 48,
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(56),
-                                            border: Border.all(
-                                                width: 2,
-                                                color: selectedIcon['color'] !=
-                                                        null
-                                                    ? Color(int.parse(
-                                                        selectedIcon['color']))
-                                                    : Colors.transparent)),
-                                        child: IconButton(
-                                          onPressed: () =>
-                                              _tapResourceIcon(context),
-                                          icon: Icon(
-                                            IconData(
-                                                int.parse(selectedIcon['icon']),
-                                                fontFamily: 'MaterialIcons'),
-                                            size: 28,
-                                            color: selectedIcon['color'] != null
-                                                ? Color(int.parse(
-                                                    selectedIcon['color']))
-                                                : Colors.white54,
+                                                        ? Colors.white
+                                                        : Colors.white54,
+                                              )),
+                                          Text(
+                                            selectedResource['title'],
+                                            style: TextStyle(
+                                                color:
+                                                    selectedResource['color'] !=
+                                                            null
+                                                        ? Colors.white
+                                                        : Colors.white54,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
                                           ),
-                                        ),
+                                        ]),
                                       ),
-                                      hintStyle: const TextStyle(
-                                          color: Colors.white54),
-                                      hintText: 'نام منبع خرج',
-                                      enabledBorder: const UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      focusedBorder: const UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
                                     ),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
+                                    Divider(
+                                      color: Colors.grey[800],
                                     ),
-                                    autofocus: true,
-                                    controller: _resourceTitleController,
-                                    textAlign: TextAlign.right,
+                                    TextFormField(
+                                      validator: (value) => value == null ||
+                                              value.isEmpty ||
+                                              value == '0'
+                                          ? 'موجودی نمی‌تواند صفر یا خالی باشد'
+                                          : null,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.transparent)),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.transparent)),
+                                        suffixText: 'تومان',
+                                        prefixText: 'موجودی:',
+                                        prefixStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                        suffixStyle: TextStyle(
+                                            color:
+                                                Color.fromRGBO(40, 204, 158, 1),
+                                            fontSize: 16,
+                                            wordSpacing: 24,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 28,
+                                        color: Color.fromRGBO(40, 204, 158, 1),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      controller: _amountController,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    Divider(
+                                      color: Colors.grey[800],
+                                    ),
+                                    TextField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.transparent)),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.transparent)),
+                                        prefixText: 'شماره کارت:',
+                                        prefixStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white54,
+                                      ),
+                                      controller: _cardNumberController,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    Divider(
+                                      color: Colors.grey[800],
+                                    ),
+                                    TextField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.transparent)),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.transparent)),
+                                        prefixText: 'شماره حساب:',
+                                        prefixStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white54,
+                                      ),
+                                      controller: _accountNumberController,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ])
+                                : Column(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          TextFormField(
+                                            validator: (value) => value ==
+                                                        null ||
+                                                    value.isEmpty
+                                                ? 'نام منبع خرج نمی‌تواند خالی باشد'
+                                                : null,
+                                            keyboardType: TextInputType.name,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 16),
+                                              prefixIcon: Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 12),
+                                                width: 48,
+                                                height: 48,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            56),
+                                                    border: Border.all(
+                                                        width: 2,
+                                                        color: selectedIcon[
+                                                                    'color'] !=
+                                                                null
+                                                            ? Color(int.parse(
+                                                                selectedIcon[
+                                                                    'color']))
+                                                            : Colors
+                                                                .transparent)),
+                                                child: IconButton(
+                                                  onPressed: () =>
+                                                      _tapResourceIcon(context),
+                                                  icon: Icon(
+                                                    IconData(
+                                                        int.parse(selectedIcon[
+                                                            'icon']),
+                                                        fontFamily:
+                                                            'MaterialIcons'),
+                                                    size: 28,
+                                                    color:
+                                                        selectedIcon['color'] !=
+                                                                null
+                                                            ? Color(int.parse(
+                                                                selectedIcon[
+                                                                    'color']))
+                                                            : Colors.white54,
+                                                  ),
+                                                ),
+                                              ),
+                                              hintStyle: const TextStyle(
+                                                  color: Colors.white54),
+                                              hintText: 'نام منبع خرج',
+                                              enabledBorder:
+                                                  const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors
+                                                              .transparent)),
+                                              focusedBorder:
+                                                  const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors
+                                                              .transparent)),
+                                            ),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            autofocus: true,
+                                            controller:
+                                                _resourceTitleController,
+                                            textAlign: TextAlign.right,
+                                          ),
+                                          Divider(
+                                            color: Colors.grey[800],
+                                          ),
+                                          TextFormField(
+                                            validator: (value) => value ==
+                                                        null ||
+                                                    value.isEmpty ||
+                                                    value == '0'
+                                                ? 'موجودی نمی‌تواند صفر یا خالی باشد'
+                                                : null,
+                                            keyboardType: TextInputType.number,
+                                            decoration: const InputDecoration(
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors
+                                                              .transparent)),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors
+                                                              .transparent)),
+                                              suffixText: 'تومان',
+                                              prefixText: 'موجودی:',
+                                              prefixStyle: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                              suffixStyle: TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      40, 204, 158, 1),
+                                                  fontSize: 16,
+                                                  wordSpacing: 24,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            style: const TextStyle(
+                                              fontSize: 28,
+                                              color: Color.fromRGBO(
+                                                  40, 204, 158, 1),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            controller: _amountController,
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  Divider(
-                                    color: Colors.grey[800],
-                                  ),
-                                  TextFormField(
-                                    validator: (value) => value == null ||
-                                            value.isEmpty ||
-                                            value == '0'
-                                        ? 'موجودی نمی‌تواند خالی باشد'
-                                        : null,
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.transparent)),
-                                      suffixText: 'تومان',
-                                      prefixText: 'موجودی:',
-                                      prefixStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                      suffixStyle: TextStyle(
-                                          color:
-                                              Color.fromRGBO(40, 204, 158, 1),
-                                          fontSize: 16,
-                                          wordSpacing: 24,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 28,
-                                      color: Color.fromRGBO(40, 204, 158, 1),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    controller: _amountController,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ],
-                              ),
-                      ),
+                          )),
                     ],
                   ),
                 ),

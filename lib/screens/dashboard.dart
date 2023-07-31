@@ -15,9 +15,8 @@ import 'package:hyper_log/models/category.dart';
 import 'package:hyper_log/data/default_categories.dart';
 
 //services
-import 'package:hyper_log/services/splite_service.dart';
+import 'package:hyper_log/services/sqlite_service.dart';
 import 'package:hyper_log/services/categories_sqlite_service.dart';
-import 'package:hyper_log/services/resources_sqlite_service.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -31,7 +30,6 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   late List<Widget> _pages;
   late List<Category> categories;
-  late ResourcesSqliteService _resourcesSqliteService;
   late CategoriesSqliteService _categoriesSqliteService;
   late SqliteService _sqliteService;
 
@@ -44,7 +42,6 @@ class _DashboardState extends State<Dashboard> {
 
     _sqliteService = SqliteService();
     _categoriesSqliteService = CategoriesSqliteService();
-    _resourcesSqliteService = ResourcesSqliteService();
 
     _sqliteService.initializeDB().whenComplete(() {
       getCategories().whenComplete(() {
@@ -54,19 +51,12 @@ class _DashboardState extends State<Dashboard> {
           }
         }
       });
-
-      getResources();
     });
   }
 
   Future<void> getCategories() async {
     final result = await _categoriesSqliteService.getCategories(null);
     categories = result;
-  }
-
-  Future<void> getResources() async {
-    final results = await _resourcesSqliteService.getResources(null);
-    print(results);
   }
 
   Future<void> addCategory(Category category) async {
