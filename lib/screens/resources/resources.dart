@@ -1,8 +1,12 @@
+// screens
+import 'new_resource.dart';
+
 // packages
 import 'package:flutter/material.dart';
 
-// screens
-import 'new_resource.dart';
+// services
+// import 'package:hyper_log/services/transactions_sqlite_service.dart';
+// import 'package:hyper_log/services/resources_sqlite_service.dart';
 
 class Resources extends StatefulWidget {
   const Resources({super.key});
@@ -15,6 +19,43 @@ class Resources extends StatefulWidget {
 
 class _ResourcesState extends State<Resources> {
   bool isActiveBankTab = true;
+  late List<Map> resources;
+
+  // late TransactionsSqliteService _transactionsSqliteService;
+  // late ResourcesSqliteService _resourcesSqliteService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // _transactionsSqliteService = TransactionsSqliteService();
+    // _resourcesSqliteService = ResourcesSqliteService();
+
+    // getResources();
+    // getTransactions();
+    // getResour();
+  }
+
+  // Future<void> getResources() async {
+  //   final result = await _transactionsSqliteService.getResourcesWithCredit();
+  //   print('result😂');
+  //   print(result);
+  //   setState(() {
+  //     resources = result;
+  //   });
+  // }
+
+  // Future<void> getTransactions() async {
+  //   final result = await _transactionsSqliteService.getTransactions(null);
+  //   print('txn😎');
+  //   print(result);
+  // }
+
+  // Future<void> getResour() async {
+  //   final result = await _resourcesSqliteService.getResources(null);
+  //   print('resources😑');
+  //   print(result);
+  // }
 
   void _closeScreen(BuildContext context) {
     Navigator.of(context).pop();

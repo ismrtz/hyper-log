@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 
 // models
 import 'package:hyper_log/models/category.dart';
+import 'package:hyper_log/models/resource.dart';
 
 // widgets
 import 'package:hyper_log/widgets/category/category_list.dart';
+import 'package:hyper_log/widgets/resource/resource_list.dart';
 import 'package:hyper_log/widgets/transaction/transaction_field.dart';
 
 // services
 import '../../services/categories_sqlite_service.dart';
+import 'package:hyper_log/services/resources_sqlite_service.dart';
 
 class NewTransaction extends StatefulWidget {
   const NewTransaction({super.key});
@@ -22,11 +25,14 @@ class NewTransaction extends StatefulWidget {
 
 class _NewTransactionState extends State<NewTransaction> {
   final _amountController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
   late String action;
   // late Category selectedCategory;
+  late List<Resource> resources;
   late List<Category> categories;
   late CategoriesSqliteService _categoriesSqliteService;
+  late ResourcesSqliteService _resourcesSqliteService;
 
   List<Map> buttonsList = [
     {
@@ -83,13 +89,23 @@ class _NewTransactionState extends State<NewTransaction> {
   void initState() {
     super.initState();
     _categoriesSqliteService = CategoriesSqliteService();
+    _resourcesSqliteService = ResourcesSqliteService();
+
     getCategories(selectedTransactionType[0]['type']);
+    getRecources();
   }
 
   Future<void> getCategories(type) async {
     final result = await _categoriesSqliteService.getCategories(type);
     setState(() {
       categories = result;
+    });
+  }
+
+  Future<void> getRecources() async {
+    final result = await _resourcesSqliteService.getResources(null);
+    setState(() {
+      resources = result;
     });
   }
 
@@ -102,6 +118,11 @@ class _NewTransactionState extends State<NewTransaction> {
   }
 
   void tapTransactionField(BuildContext context, String fieldName) {
+    Object bottomSheetList = fieldName == 'category'
+        ? CategoryList(
+            height: 360, categories: categories, selectCategory: selectCategory)
+        : ResourceList(
+            height: 360, resources: resources, selectResource: selectResource);
     showModalBottomSheet(
         showDragHandle: true,
         shape: const RoundedRectangleBorder(
@@ -110,20 +131,34 @@ class _NewTransactionState extends State<NewTransaction> {
         backgroundColor: const Color.fromRGBO(12, 29, 27, 1),
         context: context,
         builder: (_) {
-          return GestureDetector(
-              child: CategoryList(
-            height: 360,
-            categories: categories,
-            selectCategory: selectCategory,
-          ));
+          return GestureDetector(child: bottomSheetList as Widget);
         });
   }
 
   void selectCategory(Category category) {
+    final Map field = {
+      'id': category.id,
+      'name': 'category',
+      'icon': category.icon,
+      'title': category.title,
+      'color': category.color,
+    };
     setState(() {
-      paymentFields[0]['icon'] = category.icon;
-      paymentFields[0]['title'] = category.title;
-      paymentFields[0]['color'] = category.color;
+      paymentFields[0] = field;
+    });
+  }
+
+  void selectResource(Resource resource) {
+    final Map field = {
+      'id': resource.id,
+      'name': 'resource',
+      'icon': resource.icon,
+      'title': resource.title,
+      'color': resource.color
+    };
+
+    setState(() {
+      paymentFields[1] = field;
     });
   }
 
@@ -251,21 +286,54 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
             Container(
               height: MediaQuery.of(context).size.height - 298,
+              padding: const EdgeInsets.only(top: 16),
               decoration: const BoxDecoration(
                   color: Color.fromRGBO(12, 29, 27, 1),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(24),
                       topRight: Radius.circular(24))),
-              child: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Column(
-                    children: paymentFields
-                        .map((field) => TransactionField(
-                              field: field,
-                              onTapTransaction: tapTransactionField,
-                            ))
-                        .toList(),
-                  )),
+              child: Column(
+                children: [
+                  ...paymentFields
+                      .map((field) => TransactionField(
+                            field: field,
+                            onTapTransaction: tapTransactionField,
+                          ))
+                      .toList(),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+                    child: TextField(
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        suffixIcon: Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          width: 48,
+                          height: 48,
+                          child: const Icon(
+                            Icons.border_color_outlined,
+                            size: 24,
+                            color: Colors.white54,
+                          ),
+                        ),
+                        hintStyle: const TextStyle(color: Colors.white54),
+                        hintText: 'یادداشت',
+                        enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent)),
+                        focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent)),
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      controller: _descriptionController,
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ]),
         ),

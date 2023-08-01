@@ -13,9 +13,6 @@ import 'package:hyper_log/models/transaction.dart' as model;
 import 'package:hyper_log/services/resources_sqlite_service.dart';
 import 'package:hyper_log/services/transactions_sqlite_service.dart';
 
-// screens
-import '../dashboard.dart';
-
 class NewResource extends StatefulWidget {
   const NewResource({super.key});
 

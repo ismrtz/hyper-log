@@ -41,6 +41,19 @@ class TransactionsSqliteService {
     });
   }
 
+  Future<List<Map>> getResourcesWithCredit() async {
+    final Database db = await initializeDB();
+
+    final List<Map<String, dynamic>> queryResult = await db.rawQuery(
+        'SELECT title, SUM(txn.amount) AS [credit] FROM Resources r JOIN Transactions txn ON txn.categoryId = r.id GROUP BY r.title');
+    return List.generate(
+        queryResult.length,
+        (index) => {
+              'title': queryResult[index]['title'],
+              'credit': queryResult[index]['credit'],
+            });
+  }
+
   Future<void> updateTransaction(model.Transaction transaction) async {
     final db = await initializeDB();
 
