@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // models
 import 'package:hyper_log/models/category.dart';
 import 'package:hyper_log/models/resource.dart';
+import 'package:hyper_log/models/transaction.dart';
 
 // widgets
 import 'package:hyper_log/widgets/category/category_list.dart';
@@ -13,6 +14,7 @@ import 'package:hyper_log/widgets/transaction/transaction_field.dart';
 // services
 import '../../services/categories_sqlite_service.dart';
 import 'package:hyper_log/services/resources_sqlite_service.dart';
+import 'package:hyper_log/services/transactions_sqlite_service.dart';
 
 class NewTransaction extends StatefulWidget {
   const NewTransaction({super.key});
@@ -31,8 +33,9 @@ class _NewTransactionState extends State<NewTransaction> {
   // late Category selectedCategory;
   late List<Resource> resources;
   late List<Category> categories;
-  late CategoriesSqliteService _categoriesSqliteService;
   late ResourcesSqliteService _resourcesSqliteService;
+  late CategoriesSqliteService _categoriesSqliteService;
+  late TransactionsSqliteService _transactionsSqliteService;
 
   List<Map> buttonsList = [
     {
@@ -88,8 +91,9 @@ class _NewTransactionState extends State<NewTransaction> {
   @override
   void initState() {
     super.initState();
-    _categoriesSqliteService = CategoriesSqliteService();
     _resourcesSqliteService = ResourcesSqliteService();
+    _categoriesSqliteService = CategoriesSqliteService();
+    _transactionsSqliteService = TransactionsSqliteService();
 
     getCategories(selectedTransactionType[0]['type']);
     getRecources();
@@ -160,6 +164,50 @@ class _NewTransactionState extends State<NewTransaction> {
     setState(() {
       paymentFields[1] = field;
     });
+  }
+
+  String dateTimeNow() {
+    DateTime now = DateTime.now();
+
+    return "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
+  }
+
+  void showSuccessfulMessage() {
+    const snackBar = SnackBar(content: Text('تراکنش با موفقیت ساخته شد✅'));
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> addNewTransaction() async {
+    if (selectedTransactionType[0]['name'] == 'transfer') {
+    } else {
+      addNewPaymentTxn().whenComplete(() {
+        showSuccessfulMessage();
+        Navigator.of(context).pop();
+      });
+    }
+  }
+
+  Future<void> getTransactions() async {
+    final result = await _transactionsSqliteService.getTransactions(null);
+    print('result😂');
+    print(result);
+  }
+
+  Future<void> addNewPaymentTxn() async {
+    if (paymentFields[0]['color'] != null &&
+        paymentFields[1]['color'] != null) {
+      final transaction = Transaction(
+        amount: int.parse(_amountController.text),
+        categoryId: paymentFields[0]['id'],
+        resourceId: paymentFields[1]['id'],
+        createdAt: dateTimeNow(),
+        description: _descriptionController.text,
+      );
+      print(transaction);
+
+      return await _transactionsSqliteService.insertTransaction(transaction);
+    }
   }
 
   @override
@@ -340,7 +388,7 @@ class _NewTransactionState extends State<NewTransaction> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(40, 204, 158, 1),
-        onPressed: () {},
+        onPressed: addNewTransaction,
         child: const Icon(Icons.done),
       ),
     );
