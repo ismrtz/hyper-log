@@ -1,16 +1,22 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // widgets
 import 'package:hyper_log/widgets/home/expense_account.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final int balance = 50000;
 
-  void _notificationTap() {
-    print('notification taped!');
+  void _exitApp() {
+    SystemNavigator.pop();
   }
 
   @override
@@ -25,11 +31,11 @@ class Home extends StatelessWidget {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 ExpenseAccount(balance),
                 IconButton(
-                    onPressed: _notificationTap,
+                    onPressed: _exitApp,
                     icon: const Icon(
                       size: 32,
                       color: Colors.grey,
-                      Icons.notifications_active_outlined,
+                      Icons.logout_outlined,
                     )),
               ])
             ],

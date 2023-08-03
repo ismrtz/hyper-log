@@ -1,5 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // widgets
 import 'package:hyper_log/widgets/more/menu_item.dart';
@@ -66,8 +67,8 @@ class _MoreState extends State<More> {
     return tabs.where((button) => button['selected']).toList();
   }
 
-  void _notificationTap() {
-    print('notification taped!');
+  void _exitApp() {
+    SystemNavigator.pop();
   }
 
   @override
@@ -91,11 +92,11 @@ class _MoreState extends State<More> {
                           children: [
                             ExpenseAccount(balance),
                             IconButton(
-                                onPressed: _notificationTap,
+                                onPressed: _exitApp,
                                 icon: const Icon(
                                   size: 32,
                                   color: Colors.grey,
-                                  Icons.notifications_active_outlined,
+                                  Icons.logout_outlined,
                                 )),
                           ]),
                       Container(

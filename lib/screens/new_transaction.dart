@@ -188,23 +188,18 @@ class _NewTransactionState extends State<NewTransaction> {
     }
   }
 
-  Future<void> getTransactions() async {
-    final result = await _transactionsSqliteService.getTransactions(null);
-    print('result😂');
-    print(result);
-  }
-
   Future<void> addNewPaymentTxn() async {
     if (paymentFields[0]['color'] != null &&
         paymentFields[1]['color'] != null) {
       final transaction = Transaction(
-        amount: int.parse(_amountController.text),
+        amount: selectedTransactionType[0]['name'] == 'payment'
+            ? -int.parse(_amountController.text)
+            : int.parse(_amountController.text),
         categoryId: paymentFields[0]['id'],
         resourceId: paymentFields[1]['id'],
         createdAt: dateTimeNow(),
         description: _descriptionController.text,
       );
-      print(transaction);
 
       return await _transactionsSqliteService.insertTransaction(transaction);
     }

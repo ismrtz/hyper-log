@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 // models
 import 'package:hyper_log/models/category.dart';
 
+// widgets
+import 'package:hyper_log/widgets/global/icon_picker.dart';
+
 // services
 import 'package:hyper_log/services/categories_sqlite_service.dart';
-
-//widgets
-import 'package:hyper_log/widgets/global/icon_picker.dart';
 
 class NewCategory extends StatefulWidget {
   const NewCategory({super.key});
@@ -38,7 +38,7 @@ class _NewCategoryState extends State<NewCategory> {
     _categoriesSqliteService = CategoriesSqliteService();
   }
 
-  void _closeScreen(BuildContext context) {
+  void _backScreen(BuildContext context) {
     Navigator.of(context).pop();
   }
 
@@ -125,7 +125,7 @@ class _NewCategoryState extends State<NewCategory> {
                             fontWeight: FontWeight.bold),
                       ),
                       IconButton(
-                          onPressed: () => _closeScreen(context),
+                          onPressed: () => _backScreen(context),
                           icon: Icon(
                             Icons.arrow_forward_outlined,
                             color: Colors.grey[200],

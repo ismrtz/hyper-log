@@ -1,12 +1,14 @@
-// screens
-import 'new_resource.dart';
-
 // packages
 import 'package:flutter/material.dart';
 
+// screens
+import 'new_resource.dart';
+
+// widgets
+import 'package:hyper_log/widgets/resource/resource_card.dart';
+
 // services
-// import 'package:hyper_log/services/transactions_sqlite_service.dart';
-// import 'package:hyper_log/services/resources_sqlite_service.dart';
+import 'package:hyper_log/services/transactions_sqlite_service.dart';
 
 class Resources extends StatefulWidget {
   const Resources({super.key});
@@ -19,57 +21,53 @@ class Resources extends StatefulWidget {
 
 class _ResourcesState extends State<Resources> {
   bool isActiveBankTab = true;
-  late List<Map> resources;
 
-  // late TransactionsSqliteService _transactionsSqliteService;
-  // late ResourcesSqliteService _resourcesSqliteService;
+  List<Map> resources = [];
+
+  late TransactionsSqliteService _transactionsSqliteService;
 
   @override
   void initState() {
     super.initState();
 
-    // _transactionsSqliteService = TransactionsSqliteService();
-    // _resourcesSqliteService = ResourcesSqliteService();
+    _transactionsSqliteService = TransactionsSqliteService();
 
-    // getResources();
-    // getTransactions();
-    // getResour();
+    getResources();
   }
 
-  // Future<void> getResources() async {
-  //   final result = await _transactionsSqliteService.getResourcesWithCredit();
-  //   print('result😂');
-  //   print(result);
-  //   setState(() {
-  //     resources = result;
-  //   });
-  // }
+  Future<void> getResources() async {
+    final result =
+        await _transactionsSqliteService.getResourcesWithCredit(null);
+    setState(() {
+      resources = result;
+    });
+  }
 
-  // Future<void> getTransactions() async {
-  //   final result = await _transactionsSqliteService.getTransactions(null);
-  //   print('txn😎');
-  //   print(result);
-  // }
+  List<Map> get bankResources {
+    return resources.where((resource) => resource['type'] == 1).toList();
+  }
 
-  // Future<void> getResour() async {
-  //   final result = await _resourcesSqliteService.getResources(null);
-  //   print('resources😑');
-  //   print(result);
-  // }
+  List<Map> get cashResources {
+    return resources.where((resource) => resource['type'] == 0).toList();
+  }
 
-  void _closeScreen(BuildContext context) {
+  void _backScreen(BuildContext context) {
     Navigator.of(context).pop();
   }
 
   void _setBankTab() {
     setState(() {
-      if (!isActiveBankTab) isActiveBankTab = true;
+      if (!isActiveBankTab) {
+        isActiveBankTab = true;
+      }
     });
   }
 
   void _setCashTab() {
     setState(() {
-      if (isActiveBankTab) isActiveBankTab = false;
+      if (isActiveBankTab) {
+        isActiveBankTab = false;
+      }
     });
   }
 
@@ -121,7 +119,7 @@ class _ResourcesState extends State<Resources> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey.shade200)),
                         IconButton(
-                          onPressed: () => _closeScreen(context),
+                          onPressed: () => _backScreen(context),
                           icon: Icon(
                             Icons.arrow_forward_outlined,
                             color: Colors.grey.shade200,
@@ -207,13 +205,26 @@ class _ResourcesState extends State<Resources> {
                       ),
                     ),
                     Divider(color: Colors.grey[800]),
-                    const Padding(
-                      padding: EdgeInsets.all(24),
-                      child: Text(
-                        'Hello',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height - 246,
+                        child: ListView.builder(
+                            padding: const EdgeInsets.all(24),
+                            itemCount: isActiveBankTab
+                                ? bankResources.length
+                                : cashResources.length,
+                            itemBuilder: (context, index) => Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: Column(
+                                    children: [
+                                      ResourceCard(
+                                        resource: isActiveBankTab
+                                            ? bankResources[index]
+                                            : cashResources[index],
+                                        selectResource: () {},
+                                      )
+                                    ],
+                                  ),
+                                )))
                   ]),
                 ),
               ],

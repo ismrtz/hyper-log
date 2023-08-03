@@ -41,16 +41,24 @@ class TransactionsSqliteService {
     });
   }
 
-  Future<List<Map>> getResourcesWithCredit() async {
+  Future<List<Map>> getResourcesWithCredit(type) async {
     final Database db = await initializeDB();
 
-    final List<Map<String, dynamic>> queryResult = await db.rawQuery(
-        'SELECT title, SUM(txn.amount) AS [credit] FROM Resources r JOIN Transactions txn ON txn.categoryId = r.id GROUP BY r.title');
+    final List<Map<String, dynamic>> queryResult = type == null
+        ? await db.rawQuery(
+            'SELECT r.title, r.type, r.icon, r.color, r.card, r.account, SUM(amount) AS [amount] FROM Transactions txn JOIN Resources r ON r.id = txn.resourceId GROUP BY txn.resourceId, r.id')
+        : await db.rawQuery(
+            'SELECT r.title, r.icon, r.color, SUM(amount) AS [amount] FROM Transactions txn WHERE type = $type JOIN Resources r ON r.id = txn.resourceId GROUP BY txn.resourceId, r.id');
     return List.generate(
         queryResult.length,
         (index) => {
+              'type': queryResult[index]['type'],
+              'icon': queryResult[index]['icon'],
+              'card': queryResult[index]['card'],
               'title': queryResult[index]['title'],
-              'credit': queryResult[index]['credit'],
+              'color': queryResult[index]['color'],
+              'amount': queryResult[index]['amount'],
+              'account': queryResult[index]['account'],
             });
   }
 

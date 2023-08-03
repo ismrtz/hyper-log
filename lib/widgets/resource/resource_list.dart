@@ -5,7 +5,7 @@ import '../../models/resource.dart';
 import 'package:flutter/material.dart';
 
 // widgets
-import './resource_card.dart';
+import 'resource_item.dart';
 
 class ResourceList extends StatelessWidget {
   const ResourceList(
@@ -29,7 +29,7 @@ class ResourceList extends StatelessWidget {
                   textDirection: TextDirection.rtl,
                   child: Column(
                     children: [
-                      ResourceCard(
+                      ResourceItem(
                         resource: resources[index],
                         selectResource: selectResource,
                       )

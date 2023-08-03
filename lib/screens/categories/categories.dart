@@ -50,7 +50,7 @@ class _CategoriesState extends State<Categories> {
     return categories.where((category) => category.type == 0).toList();
   }
 
-  void _closeScreen(BuildContext context) {
+  void _backScreen(BuildContext context) {
     Navigator.of(context).pop();
   }
 
@@ -114,7 +114,7 @@ class _CategoriesState extends State<Categories> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey.shade200)),
                         IconButton(
-                          onPressed: () => _closeScreen(context),
+                          onPressed: () => _backScreen(context),
                           icon: Icon(
                             Icons.arrow_forward_outlined,
                             color: Colors.grey.shade200,

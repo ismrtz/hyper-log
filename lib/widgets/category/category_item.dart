@@ -4,8 +4,8 @@ import '../../models/category.dart';
 // packages
 import 'package:flutter/material.dart';
 
-class CategoryCard extends StatelessWidget {
-  const CategoryCard(
+class CategoryItem extends StatelessWidget {
+  const CategoryItem(
       {required this.category, required this.selectCategory, super.key});
 
   final Category category;

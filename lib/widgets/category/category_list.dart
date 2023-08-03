@@ -5,7 +5,7 @@ import '../../models/category.dart';
 import 'package:flutter/material.dart';
 
 // widgets
-import './category_card.dart';
+import 'category_item.dart';
 
 class CategoryList extends StatelessWidget {
   const CategoryList(
@@ -29,7 +29,7 @@ class CategoryList extends StatelessWidget {
                   textDirection: TextDirection.rtl,
                   child: Column(
                     children: [
-                      CategoryCard(
+                      CategoryItem(
                         category: categories[index],
                         selectCategory: selectCategory,
                       )

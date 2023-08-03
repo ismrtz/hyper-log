@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // widgets
-import './bank_resource_list.dart';
-import './cash_resource_list.dart';
+import '../../widgets/resource/bank_resource_list.dart';
+import '../../widgets/resource/cash_resource_list.dart';
 
 // models
 import 'package:hyper_log/models/resource.dart';
