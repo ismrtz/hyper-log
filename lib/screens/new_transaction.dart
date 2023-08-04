@@ -166,12 +166,6 @@ class _NewTransactionState extends State<NewTransaction> {
     });
   }
 
-  String dateTimeNow() {
-    DateTime now = DateTime.now();
-
-    return "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
-  }
-
   void showSuccessfulMessage() {
     const snackBar = SnackBar(content: Text('تراکنش با موفقیت ساخته شد✅'));
 
@@ -183,7 +177,7 @@ class _NewTransactionState extends State<NewTransaction> {
     } else {
       addNewPaymentTxn().whenComplete(() {
         showSuccessfulMessage();
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       });
     }
   }
@@ -197,7 +191,7 @@ class _NewTransactionState extends State<NewTransaction> {
             : int.parse(_amountController.text),
         categoryId: paymentFields[0]['id'],
         resourceId: paymentFields[1]['id'],
-        createdAt: dateTimeNow(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
         description: _descriptionController.text,
       );
 

@@ -144,14 +144,8 @@ class _NewResourceState extends State<NewResource> {
     final result = await _resourcesSqliteService.getResources(null);
     addResourceAmountTxn(result).whenComplete(() {
       showSuccessfulMessage();
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
     });
-  }
-
-  String dateTimeNow() {
-    DateTime now = DateTime.now();
-
-    return "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
   }
 
   Future<void> addResourceAmountTxn(List resources) async {
@@ -159,7 +153,7 @@ class _NewResourceState extends State<NewResource> {
       amount: int.parse(_amountController.text),
       categoryId: 5,
       resourceId: resources.isEmpty ? 1 : resources.length,
-      createdAt: dateTimeNow(),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
       description: '',
     );
     return await _transactionsSqliteService.insertTransaction(transaction);
