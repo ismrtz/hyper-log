@@ -1,4 +1,8 @@
+// packages
 import 'package:flutter/material.dart';
+
+// utils
+import 'package:hyper_log/utils/amount.dart';
 
 class ResourceCard extends StatelessWidget {
   const ResourceCard(
@@ -27,6 +31,7 @@ class ResourceCard extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: () {},
+            splashColor: const Color.fromRGBO(25, 107, 105, 1),
             borderRadius: BorderRadius.circular(14),
             child: Column(children: [
               Padding(
@@ -49,7 +54,7 @@ class ResourceCard extends StatelessWidget {
                           child: Row(
                             children: [
                               Text(
-                                resource['amount'].abs().toString(),
+                                Amount.toSeparator(resource['amount'].abs()),
                                 style: const TextStyle(
                                     fontSize: 28,
                                     color: Colors.white,

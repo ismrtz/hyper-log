@@ -12,7 +12,7 @@ class Account with ChangeNotifier {
   Future<void> getBalance() async {
     final result = await _transactionsSqliteService.getTotalAmount();
 
-    _balance = result[0]['amount'];
+    _balance = result[0]['amount'] ?? 0;
     notifyListeners();
   }
 }

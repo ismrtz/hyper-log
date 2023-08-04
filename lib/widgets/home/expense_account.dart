@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// utils
+import 'package:hyper_log/utils/amount.dart';
+
 // providers
 import 'package:hyper_log/providers/account.dart';
 
@@ -40,7 +43,7 @@ class _ExpenseAccountState extends State<ExpenseAccount> {
                 Container(
                   margin: const EdgeInsets.only(left: 4),
                   child: Text(
-                    account.balance.toString(),
+                    Amount.toSeparator(account.balance),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
