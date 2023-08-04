@@ -28,12 +28,12 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  int _selectedPageIndex = 0;
+
   late List<Widget> _pages;
   late List<Category> categories;
-  late CategoriesSqliteService _categoriesSqliteService;
   late SqliteService _sqliteService;
-
-  int _selectedPageIndex = 0;
+  late CategoriesSqliteService _categoriesSqliteService;
 
   @override
   void initState() {

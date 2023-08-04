@@ -1,10 +1,36 @@
 // packages
 import 'package:flutter/material.dart';
 
-class ExpenseAccount extends StatelessWidget {
-  const ExpenseAccount(this.balance, {super.key});
+// services
+import 'package:hyper_log/services/transactions_sqlite_service.dart';
 
-  final int balance;
+class ExpenseAccount extends StatefulWidget {
+  const ExpenseAccount({super.key});
+
+  @override
+  State<ExpenseAccount> createState() => _ExpenseAccountState();
+}
+
+class _ExpenseAccountState extends State<ExpenseAccount> {
+  int balance = 0;
+
+  late TransactionsSqliteService _transactionsSqliteService;
+
+  @override
+  void initState() {
+    super.initState();
+    _transactionsSqliteService = TransactionsSqliteService();
+
+    getTotalAmount();
+  }
+
+  Future<void> getTotalAmount() async {
+    final result = await _transactionsSqliteService.getTotalAmount();
+
+    setState(() {
+      balance = result[0]['amount'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +41,13 @@ class ExpenseAccount extends StatelessWidget {
           margin: const EdgeInsets.only(left: 8),
           width: 48,
           height: 48,
-          color: const Color.fromRGBO(255, 51, 102, 1),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: const Color.fromRGBO(255, 51, 102, 1)),
           child: const Icon(Icons.wallet, color: Colors.white),
         ),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'دفتر خرج شخصی',

@@ -13,8 +13,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final int balance = 50000;
-
   void _exitApp() {
     SystemNavigator.pop();
   }
@@ -29,7 +27,7 @@ class _HomeState extends State<Home> {
           child: Column(
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                ExpenseAccount(balance),
+                const ExpenseAccount(),
                 IconButton(
                     onPressed: _exitApp,
                     icon: const Icon(

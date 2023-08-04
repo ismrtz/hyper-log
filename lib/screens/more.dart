@@ -14,8 +14,6 @@ class More extends StatefulWidget {
 }
 
 class _MoreState extends State<More> {
-  final int balance = 50000;
-
   List<Map> tabs = [
     {
       'selected': true,
@@ -90,7 +88,7 @@ class _MoreState extends State<More> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ExpenseAccount(balance),
+                            const ExpenseAccount(),
                             IconButton(
                                 onPressed: _exitApp,
                                 icon: const Icon(

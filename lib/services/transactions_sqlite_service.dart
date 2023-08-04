@@ -22,6 +22,16 @@ class TransactionsSqliteService {
     );
   }
 
+  Future<List<Map>> getTotalAmount() async {
+    final Database db = await initializeDB();
+
+    final List<Map<String, dynamic>> queryResult =
+        await db.rawQuery('SELECT SUM(amount) AS [amount] FROM Transactions');
+
+    return List.generate(queryResult.length,
+        (index) => {'amount': queryResult[index]['amount']});
+  }
+
   Future<List<model.Transaction>> getTransactions(type) async {
     final Database db = await initializeDB();
 
