@@ -1,10 +1,14 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // models
 import 'package:hyper_log/models/category.dart';
 import 'package:hyper_log/models/resource.dart';
 import 'package:hyper_log/models/transaction.dart';
+
+// providers
+import 'package:hyper_log/providers/account.dart';
 
 // widgets
 import 'package:hyper_log/widgets/category/category_list.dart';
@@ -176,10 +180,16 @@ class _NewTransactionState extends State<NewTransaction> {
     if (selectedTransactionType[0]['name'] == 'transfer') {
     } else {
       addNewPaymentTxn().whenComplete(() {
+        updateBalance();
         showSuccessfulMessage();
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop();
       });
     }
+  }
+
+  void updateBalance() {
+    final account = Provider.of<Account>(context, listen: false);
+    account.getBalance();
   }
 
   Future<void> addNewPaymentTxn() async {

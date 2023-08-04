@@ -1,8 +1,9 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-// services
-import 'package:hyper_log/services/transactions_sqlite_service.dart';
+// providers
+import 'package:hyper_log/providers/account.dart';
 
 class ExpenseAccount extends StatefulWidget {
   const ExpenseAccount({super.key});
@@ -12,28 +13,9 @@ class ExpenseAccount extends StatefulWidget {
 }
 
 class _ExpenseAccountState extends State<ExpenseAccount> {
-  int balance = 0;
-
-  late TransactionsSqliteService _transactionsSqliteService;
-
-  @override
-  void initState() {
-    super.initState();
-    _transactionsSqliteService = TransactionsSqliteService();
-
-    getTotalAmount();
-  }
-
-  Future<void> getTotalAmount() async {
-    final result = await _transactionsSqliteService.getTotalAmount();
-
-    setState(() {
-      balance = result[0]['amount'];
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final account = Provider.of<Account>(context);
     return SizedBox(
       height: 53,
       child: Row(children: [
@@ -58,19 +40,23 @@ class _ExpenseAccountState extends State<ExpenseAccount> {
                 Container(
                   margin: const EdgeInsets.only(left: 4),
                   child: Text(
-                    balance.toString(),
-                    style: const TextStyle(
+                    account.balance.toString(),
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromRGBO(40, 204, 158, 1),
+                      color: account.balance > 0
+                          ? const Color.fromRGBO(40, 204, 158, 1)
+                          : const Color.fromRGBO(255, 51, 102, 1),
                     ),
                   ),
                 ),
-                const Text(
+                Text(
                   'تومان',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color.fromRGBO(40, 204, 158, 1),
+                    color: account.balance > 0
+                        ? const Color.fromRGBO(40, 204, 158, 1)
+                        : const Color.fromRGBO(255, 51, 102, 1),
                   ),
                 ),
               ],

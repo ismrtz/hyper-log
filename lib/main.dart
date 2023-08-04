@@ -1,6 +1,10 @@
+// providers
+import './providers/account.dart';
+
 //packages
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 //screens
 import './screens/dashboard.dart';
@@ -26,20 +30,23 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          fontFamily: 'VazirMatn',
-          bottomSheetTheme:
-              const BottomSheetThemeData(dragHandleColor: Colors.grey)),
-      home: const Directionality(
-          textDirection: TextDirection.rtl, child: Dashboard()),
-      routes: {
-        NewTransaction.routeName: (context) => const NewTransaction(),
-        Resources.routeName: (context) => const Resources(),
-        Categories.routeName: (context) => const Categories(),
-        NewResource.routeName: (context) => const NewResource(),
-        NewCategory.routeName: (context) => const NewCategory()
-      },
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => Account(),
+      child: MaterialApp(
+        theme: ThemeData(
+            fontFamily: 'VazirMatn',
+            bottomSheetTheme:
+                const BottomSheetThemeData(dragHandleColor: Colors.grey)),
+        home: const Directionality(
+            textDirection: TextDirection.rtl, child: Dashboard()),
+        routes: {
+          NewTransaction.routeName: (context) => const NewTransaction(),
+          Resources.routeName: (context) => const Resources(),
+          Categories.routeName: (context) => const Categories(),
+          NewResource.routeName: (context) => const NewResource(),
+          NewCategory.routeName: (context) => const NewCategory()
+        },
+      ),
     );
   }
 }

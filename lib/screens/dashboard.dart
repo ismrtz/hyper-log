@@ -1,20 +1,24 @@
-//screens
+// screens
 import './home.dart';
 import './more.dart';
 import './tools.dart';
 import './transactions.dart';
 import './new_transaction.dart';
 
-//packages
+// packages
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 //models
 import 'package:hyper_log/models/category.dart';
 
-//data
+// providers
+import 'package:hyper_log/providers/account.dart';
+
+// data
 import 'package:hyper_log/data/default_categories.dart';
 
-//services
+// services
 import 'package:hyper_log/services/sqlite_service.dart';
 import 'package:hyper_log/services/categories_sqlite_service.dart';
 
@@ -52,6 +56,13 @@ class _DashboardState extends State<Dashboard> {
         }
       });
     });
+
+    getBalance();
+  }
+
+  void getBalance() {
+    final account = Provider.of<Account>(context, listen: false);
+    account.getBalance();
   }
 
   Future<void> getCategories() async {

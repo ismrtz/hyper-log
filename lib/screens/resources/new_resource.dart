@@ -1,5 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // widgets
 import '../../widgets/resource/bank_resource_list.dart';
@@ -8,6 +9,9 @@ import '../../widgets/resource/cash_resource_list.dart';
 // models
 import 'package:hyper_log/models/resource.dart';
 import 'package:hyper_log/models/transaction.dart' as model;
+
+// providers
+import 'package:hyper_log/providers/account.dart';
 
 // services
 import 'package:hyper_log/services/resources_sqlite_service.dart';
@@ -143,9 +147,15 @@ class _NewResourceState extends State<NewResource> {
   Future<void> getResources() async {
     final result = await _resourcesSqliteService.getResources(null);
     addResourceAmountTxn(result).whenComplete(() {
+      updateBalance();
       showSuccessfulMessage();
       Navigator.of(context).pop(true);
     });
+  }
+
+  void updateBalance() {
+    final account = Provider.of<Account>(context, listen: false);
+    account.getBalance();
   }
 
   Future<void> addResourceAmountTxn(List resources) async {
