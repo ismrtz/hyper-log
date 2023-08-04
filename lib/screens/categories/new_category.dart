@@ -90,7 +90,7 @@ class _NewCategoryState extends State<NewCategory> {
               .insertCategory(cashResource)
               .whenComplete(() {
             showSuccessfulMessage();
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           }));
     }
   }

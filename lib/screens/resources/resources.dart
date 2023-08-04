@@ -72,7 +72,9 @@ class _ResourcesState extends State<Resources> {
   }
 
   void _openNewResourcePage(BuildContext context) {
-    Navigator.of(context).pushNamed(NewResource.routeName);
+    Navigator.of(context).pushNamed(NewResource.routeName).then(
+        (isSuccessfulAdded) =>
+            isSuccessfulAdded == true ? getResources() : null);
   }
 
   @override

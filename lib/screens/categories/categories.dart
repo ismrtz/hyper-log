@@ -1,6 +1,4 @@
 // screens
-import 'package:hyper_log/widgets/category/category_list.dart';
-
 import './new_category.dart';
 
 // packages
@@ -8,6 +6,9 @@ import 'package:flutter/material.dart';
 
 //models
 import 'package:hyper_log/models/category.dart';
+
+// widgets
+import 'package:hyper_log/widgets/category/category_list.dart';
 
 //services
 import 'package:hyper_log/services/categories_sqlite_service.dart';
@@ -67,7 +68,9 @@ class _CategoriesState extends State<Categories> {
   }
 
   void _openNewResourcePage(BuildContext context) {
-    Navigator.of(context).pushNamed(NewCategory.routeName);
+    Navigator.of(context).pushNamed(NewCategory.routeName).then(
+        (isSuccessfulAdded) =>
+            isSuccessfulAdded == true ? getCategories() : null);
   }
 
   @override
