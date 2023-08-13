@@ -53,6 +53,11 @@ class _TransactionsState extends State<Transactions> {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Text('تراکنش‌ها',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey.shade200)),
                             TextButton.icon(
                                 style: const ButtonStyle(
                                   padding: MaterialStatePropertyAll(
@@ -70,11 +75,6 @@ class _TransactionsState extends State<Transactions> {
                                       color: Color.fromRGBO(40, 204, 158, 1),
                                       fontSize: 16),
                                 )),
-                            Text('تراکنش‌ها',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey.shade200)),
                           ]),
                     ),
                     SizedBox(
