@@ -9,8 +9,10 @@ class ResourceCard extends StatelessWidget {
       {required this.resource,
       required this.selectResource,
       required this.margin,
+      required this.width,
       super.key});
 
+  final double width;
   final Map resource;
   final EdgeInsets margin;
   final Function selectResource;
@@ -18,7 +20,7 @@ class ResourceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 270,
+      width: width,
       margin: margin,
       decoration: BoxDecoration(
           backgroundBlendMode: BlendMode.colorDodge,

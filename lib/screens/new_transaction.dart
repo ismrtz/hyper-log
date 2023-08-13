@@ -109,7 +109,16 @@ class _NewTransactionState extends State<NewTransaction> {
 
     getCategories(selectedTransactionType[0]['type']);
     getRecources();
-    getTransactions();
+
+    Future.delayed(Duration.zero, () {
+      final routeArgs = ModalRoute.of(context)!.settings.arguments! as Map;
+      if (routeArgs.isNotEmpty) {
+        for (var i = 0; i < buttonsList.length; i++) {
+          buttonsList[i]['selected'] =
+              buttonsList[i]['name'] == routeArgs['action'];
+        }
+      }
+    });
   }
 
   Future<void> getCategories(type) async {
@@ -124,12 +133,6 @@ class _NewTransactionState extends State<NewTransaction> {
     setState(() {
       resources = result;
     });
-  }
-
-  Future<void> getTransactions() async {
-    final result = await _transactionsSqliteService.getTransactions(null);
-    print('result');
-    print(result);
   }
 
   dynamic get selectedTransactionType {

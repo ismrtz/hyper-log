@@ -33,8 +33,6 @@ class _TransactionsState extends State<Transactions> {
     mapedList.forEach(
         (key, value) => transactions.add({'date': key, 'Txns': value}));
     setState(() {});
-    print('transactions');
-    print(result);
   }
 
   @override

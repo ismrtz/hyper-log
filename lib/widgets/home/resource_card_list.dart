@@ -45,6 +45,7 @@ class _ResourceCardListState extends State<ResourceCardList> {
                     child: Column(
                       children: [
                         ResourceCard(
+                          width: 270,
                           resource: widget.resources[index],
                           selectResource: () {},
                           margin: const EdgeInsets.only(left: 16),

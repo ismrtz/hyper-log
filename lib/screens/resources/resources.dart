@@ -223,6 +223,7 @@ class _ResourcesState extends State<Resources> {
                                   child: Column(
                                     children: [
                                       ResourceCard(
+                                        width: double.infinity,
                                         resource: isActiveBankTab
                                             ? account.bankResources[index]
                                             : account.cashResources[index],
