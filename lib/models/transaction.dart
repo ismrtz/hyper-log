@@ -3,7 +3,7 @@ class Transaction {
   final int amount;
   final int categoryId;
   final int resourceId;
-  final int createdAt;
+  final String createdAt;
   final String? description;
 
   Transaction({

@@ -33,7 +33,7 @@ class _NewTransactionState extends State<NewTransaction> {
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  late String action;
+  // late String action;
   // late Category selectedCategory;
   late List<Resource> resources;
   late List<Category> categories;
@@ -78,11 +78,19 @@ class _NewTransactionState extends State<NewTransaction> {
       'title': 'نام منبع خرج',
       'icon': '0xee33',
     },
-    // {
-    //   'name': 'label',
-    //   'title': 'برچسب‌ها',
-    //   'icon': '0xe364',
-    // },
+  ];
+
+  List transferFields = [
+    {
+      'name': 'from',
+      'title': 'از منبع خرج',
+      'icon': '0xee33',
+    },
+    {
+      'name': 'to',
+      'title': 'به منبع خرج',
+      'icon': '0xee33',
+    },
   ];
 
   // @override
@@ -101,6 +109,7 @@ class _NewTransactionState extends State<NewTransaction> {
 
     getCategories(selectedTransactionType[0]['type']);
     getRecources();
+    getTransactions();
   }
 
   Future<void> getCategories(type) async {
@@ -117,6 +126,12 @@ class _NewTransactionState extends State<NewTransaction> {
     });
   }
 
+  Future<void> getTransactions() async {
+    final result = await _transactionsSqliteService.getTransactions(null);
+    print('result');
+    print(result);
+  }
+
   dynamic get selectedTransactionType {
     return buttonsList.where((button) => button['selected']).toList();
   }
@@ -130,7 +145,10 @@ class _NewTransactionState extends State<NewTransaction> {
         ? CategoryList(
             height: 360, categories: categories, selectCategory: selectCategory)
         : ResourceList(
-            height: 360, resources: resources, selectResource: selectResource);
+            field: fieldName,
+            height: 360,
+            resources: resources,
+            selectResource: selectResource);
     showModalBottomSheet(
         showDragHandle: true,
         shape: const RoundedRectangleBorder(
@@ -156,17 +174,23 @@ class _NewTransactionState extends State<NewTransaction> {
     });
   }
 
-  void selectResource(Resource resource) {
+  void selectResource(Resource resource, fieldName) {
     final Map field = {
       'id': resource.id,
-      'name': 'resource',
+      'name': fieldName,
       'icon': resource.icon,
       'title': resource.title,
       'color': resource.color
     };
 
     setState(() {
-      paymentFields[1] = field;
+      if (fieldName == 'resource') {
+        paymentFields[1] = field;
+      } else if (fieldName == 'from') {
+        transferFields[0] = field;
+      } else {
+        transferFields[1] = field;
+      }
     });
   }
 
@@ -178,35 +202,81 @@ class _NewTransactionState extends State<NewTransaction> {
 
   Future<void> addNewTransaction() async {
     if (selectedTransactionType[0]['name'] == 'transfer') {
+      if (transferFields[0]['color'] == null &&
+          transferFields[1]['color'] == null &&
+          _amountController.text == '') return;
+
+      await withdrawNewTransferTxn();
+      await depositeNewTransferTxn().whenComplete(() {
+        updateAccount();
+        showSuccessfulMessage();
+        Navigator.of(context).pop();
+      });
     } else {
-      addNewPaymentTxn().whenComplete(() {
-        updateBalance();
+      if (paymentFields[0]['color'] == null &&
+          paymentFields[1]['color'] == null &&
+          _amountController.text == '') return;
+
+      await addNewPaymentTxn().whenComplete(() {
+        updateAccount();
         showSuccessfulMessage();
         Navigator.of(context).pop();
       });
     }
   }
 
-  void updateBalance() {
+  void updateAccount() {
     final account = Provider.of<Account>(context, listen: false);
-    account.getBalance();
+    account.getBalanceByType();
+    account.getResources();
+    selectedTransactionType[0]['name'] == 'payment'
+        ? account.getPaymentCategoires()
+        : account.getReceiptCategoires();
+  }
+
+  String dateTimeNow() {
+    DateTime now = DateTime.now();
+
+    return "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}T${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}Z";
   }
 
   Future<void> addNewPaymentTxn() async {
-    if (paymentFields[0]['color'] != null &&
-        paymentFields[1]['color'] != null) {
-      final transaction = Transaction(
-        amount: selectedTransactionType[0]['name'] == 'payment'
-            ? -int.parse(_amountController.text)
-            : int.parse(_amountController.text),
-        categoryId: paymentFields[0]['id'],
-        resourceId: paymentFields[1]['id'],
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        description: _descriptionController.text,
-      );
+    final transaction = Transaction(
+      amount: selectedTransactionType[0]['name'] == 'payment'
+          ? -int.parse(_amountController.text)
+          : int.parse(_amountController.text),
+      categoryId: paymentFields[0]['id'],
+      resourceId: paymentFields[1]['id'],
+      createdAt: dateTimeNow(),
+      description: _descriptionController.text,
+    );
 
-      return await _transactionsSqliteService.insertTransaction(transaction);
-    }
+    return await _transactionsSqliteService.insertTransaction(transaction);
+  }
+
+  Future<void> withdrawNewTransferTxn() async {
+    final withdrawTransaction = Transaction(
+      amount: -int.parse(_amountController.text),
+      categoryId: 1,
+      resourceId: transferFields[0]['id'],
+      createdAt: dateTimeNow(),
+      description: _descriptionController.text,
+    );
+    return await _transactionsSqliteService
+        .insertTransaction(withdrawTransaction);
+  }
+
+  Future<void> depositeNewTransferTxn() async {
+    final depositeTransaction = Transaction(
+      amount: int.parse(_amountController.text),
+      categoryId: 16,
+      resourceId: transferFields[1]['id'],
+      createdAt: dateTimeNow(),
+      description: _descriptionController.text,
+    );
+
+    return await _transactionsSqliteService
+        .insertTransaction(depositeTransaction);
   }
 
   @override
@@ -341,12 +411,19 @@ class _NewTransactionState extends State<NewTransaction> {
                       topRight: Radius.circular(24))),
               child: Column(
                 children: [
-                  ...paymentFields
-                      .map((field) => TransactionField(
-                            field: field,
-                            onTapTransaction: tapTransactionField,
-                          ))
-                      .toList(),
+                  ...selectedTransactionType[0]['name'] == 'transfer'
+                      ? transferFields
+                          .map((field) => TransactionField(
+                                field: field,
+                                onTapTransaction: tapTransactionField,
+                              ))
+                          .toList()
+                      : paymentFields
+                          .map((field) => TransactionField(
+                                field: field,
+                                onTapTransaction: tapTransactionField,
+                              ))
+                          .toList(),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 6, horizontal: 20),

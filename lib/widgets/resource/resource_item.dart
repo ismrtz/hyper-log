@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 
 class ResourceItem extends StatelessWidget {
   const ResourceItem(
-      {required this.resource, required this.selectResource, super.key});
+      {required this.field,
+      required this.resource,
+      required this.selectResource,
+      super.key});
 
+  final String field;
   final Resource resource;
   final Function selectResource;
 
@@ -17,7 +21,7 @@ class ResourceItem extends StatelessWidget {
       color: Colors.transparent,
       child: ListTile(
         onTap: () {
-          selectResource(resource);
+          selectResource(resource, field);
           Navigator.of(context).pop();
         },
         horizontalTitleGap: 12,

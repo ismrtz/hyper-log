@@ -10,10 +10,12 @@ import 'resource_item.dart';
 class ResourceList extends StatelessWidget {
   const ResourceList(
       {required this.height,
+      required this.field,
       required this.resources,
       required this.selectResource,
       super.key});
 
+  final String field;
   final double height;
   final Function selectResource;
   final List<Resource> resources;
@@ -30,6 +32,7 @@ class ResourceList extends StatelessWidget {
                   child: Column(
                     children: [
                       ResourceItem(
+                        field: field,
                         resource: resources[index],
                         selectResource: selectResource,
                       )

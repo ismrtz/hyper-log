@@ -44,7 +44,7 @@ class MainApp extends StatelessWidget {
           Resources.routeName: (context) => const Resources(),
           Categories.routeName: (context) => const Categories(),
           NewResource.routeName: (context) => const NewResource(),
-          NewCategory.routeName: (context) => const NewCategory()
+          NewCategory.routeName: (context) => const NewCategory(),
         },
       ),
     );

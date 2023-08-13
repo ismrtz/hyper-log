@@ -22,11 +22,11 @@ class TransactionsSqliteService {
     );
   }
 
-  Future<List<Map>> getTotalAmount() async {
+  Future<List<Map>> getAmountByType() async {
     final Database db = await initializeDB();
 
-    final List<Map<String, dynamic>> queryResult =
-        await db.rawQuery('SELECT SUM(amount) AS [amount] FROM Transactions');
+    final List<Map<String, dynamic>> queryResult = await db.rawQuery(
+        'SELECT c.type, SUM(amount) AS [amount] FROM Transactions txn JOIN Categories c ON c.id = txn.categoryId GROUP BY c.type');
 
     return List.generate(queryResult.length,
         (index) => {'amount': queryResult[index]['amount']});
@@ -51,6 +51,42 @@ class TransactionsSqliteService {
     });
   }
 
+  Future<List<Map>> getCategoriesWithCount(type) async {
+    final Database db = await initializeDB();
+
+    final List<Map<String, dynamic>> queryResult = type == null
+        ? await db.rawQuery(
+            'SELECT c.title, c.type, c.icon, c.color, COUNT(categoryId) AS [count] FROM Transactions txn JOIN Categories c ON c.id = txn.categoryId GROUP BY txn.categoryId, c.id')
+        : await db.rawQuery(
+            'SELECT c.title, c.type, c.icon, c.color, COUNT(categoryId) AS [count] FROM Transactions txn JOIN Categories c ON c.id = txn.categoryId WHERE type = $type GROUP BY txn.categoryId, c.id');
+    return List.generate(
+        queryResult.length,
+        (index) => {
+              'type': queryResult[index]['type'],
+              'icon': queryResult[index]['icon'],
+              'title': queryResult[index]['title'],
+              'color': queryResult[index]['color'],
+              'count': queryResult[index]['count'],
+            });
+  }
+
+  Future<List<Map>> getTransactionsByDay() async {
+    final Database db = await initializeDB();
+
+    final List queryResult = await db.rawQuery(
+        'SELECT c.title, c.icon, c.color, txn.amount, DATE(txn.createdAt) AS createdAt FROM Transactions txn JOIN Categories c ON c.id = txn.categoryId GROUP BY txn.createdAt, txn.id');
+
+    return List.generate(
+        queryResult.length,
+        (index) => {
+              'icon': queryResult[index]['icon'],
+              'createdAt': queryResult[index]['createdAt'],
+              'title': queryResult[index]['title'],
+              'color': queryResult[index]['color'],
+              'amount': queryResult[index]['amount'],
+            });
+  }
+
   Future<List<Map>> getResourcesWithCredit(type) async {
     final Database db = await initializeDB();
 
@@ -58,7 +94,7 @@ class TransactionsSqliteService {
         ? await db.rawQuery(
             'SELECT r.title, r.type, r.icon, r.color, r.card, r.account, SUM(amount) AS [amount] FROM Transactions txn JOIN Resources r ON r.id = txn.resourceId GROUP BY txn.resourceId, r.id')
         : await db.rawQuery(
-            'SELECT r.title, r.icon, r.color, SUM(amount) AS [amount] FROM Transactions txn WHERE type = $type JOIN Resources r ON r.id = txn.resourceId GROUP BY txn.resourceId, r.id');
+            'SELECT r.title, r.icon, r.color, SUM(amount) AS [amount] FROM Transactions txn JOIN Resources r ON r.id = txn.resourceId WHERE type = $type GROUP BY txn.resourceId, r.id');
     return List.generate(
         queryResult.length,
         (index) => {

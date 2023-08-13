@@ -22,6 +22,8 @@ import 'package:hyper_log/data/default_categories.dart';
 import 'package:hyper_log/services/sqlite_service.dart';
 import 'package:hyper_log/services/categories_sqlite_service.dart';
 
+ValueNotifier selectedPageIndexGlobal = ValueNotifier(0);
+
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
@@ -32,8 +34,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  int _selectedPageIndex = 0;
-
   late List<Widget> _pages;
   late List<Category> categories;
   late SqliteService _sqliteService;
@@ -57,12 +57,12 @@ class _DashboardState extends State<Dashboard> {
       });
     });
 
-    getBalance();
-  }
-
-  void getBalance() {
     final account = Provider.of<Account>(context, listen: false);
-    account.getBalance();
+
+    account.getBalanceByType();
+    account.getPaymentCategoires();
+    account.getReceiptCategoires();
+    account.getResources();
   }
 
   Future<void> getCategories() async {
@@ -76,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
 
   void _selectPage(int index) {
     setState(() {
-      _selectedPageIndex = index;
+      selectedPageIndexGlobal.value = index;
     });
   }
 
@@ -86,43 +86,47 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: _pages[_selectedPageIndex],
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _addNewTransaction(context),
-          backgroundColor: const Color.fromRGBO(40, 204, 158, 1),
-          child: const Icon(Icons.add, size: 32),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          enableFeedback: false,
-          onTap: _selectPage,
-          unselectedItemColor: Colors.grey,
-          selectedItemColor: const Color.fromRGBO(40, 204, 158, 1),
-          backgroundColor: const Color.fromRGBO(12, 29, 27, 7),
-          currentIndex: _selectedPageIndex,
-          items: const [
-            BottomNavigationBarItem(
-              label: 'خانه',
-              activeIcon: Icon(Icons.home),
-              icon: Icon(Icons.home_outlined),
-            ),
-            BottomNavigationBarItem(
-              label: 'تراکنش‌ها',
-              activeIcon: Icon(Icons.receipt_long),
-              icon: Icon(Icons.receipt_long_outlined),
-            ),
-            BottomNavigationBarItem(
-              label: 'ابزارها',
-              activeIcon: Icon(Icons.build),
-              icon: Icon(Icons.build_outlined),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.more_horiz),
-              label: 'بیشتر',
-            ),
-          ],
-        ));
+    return ValueListenableBuilder(
+      valueListenable: selectedPageIndexGlobal,
+      builder: (context, val, child) => Scaffold(
+          body: _pages[selectedPageIndexGlobal.value],
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _addNewTransaction(context),
+            backgroundColor: const Color.fromRGBO(40, 204, 158, 1),
+            child: const Icon(Icons.add, size: 32),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            enableFeedback: false,
+            onTap: _selectPage,
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: const Color.fromRGBO(40, 204, 158, 1),
+            backgroundColor: const Color.fromRGBO(12, 29, 27, 7),
+            currentIndex: selectedPageIndexGlobal.value,
+            items: const [
+              BottomNavigationBarItem(
+                label: 'خانه',
+                activeIcon: Icon(Icons.home),
+                icon: Icon(Icons.home_outlined),
+              ),
+              BottomNavigationBarItem(
+                label: 'تراکنش‌ها',
+                activeIcon: Icon(Icons.receipt_long),
+                icon: Icon(Icons.receipt_long_outlined),
+              ),
+              BottomNavigationBarItem(
+                label: 'ابزارها',
+                activeIcon: Icon(Icons.build),
+                icon: Icon(Icons.build_outlined),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.more_horiz),
+                label: 'بیشتر',
+              ),
+            ],
+          )),
+    );
   }
 }

@@ -6,15 +6,20 @@ import 'package:hyper_log/utils/amount.dart';
 
 class ResourceCard extends StatelessWidget {
   const ResourceCard(
-      {required this.resource, required this.selectResource, super.key});
+      {required this.resource,
+      required this.selectResource,
+      required this.margin,
+      super.key});
 
   final Map resource;
+  final EdgeInsets margin;
   final Function selectResource;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      width: 270,
+      margin: margin,
       decoration: BoxDecoration(
           backgroundBlendMode: BlendMode.colorDodge,
           gradient: LinearGradient(
@@ -35,56 +40,58 @@ class ResourceCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
             child: Column(children: [
               Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(resource['title'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white70.withOpacity(0.80),
+                              color: Colors.white70,
                             )),
                         Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: Row(
-                            children: [
-                              Text(
-                                Amount.toSeparator(resource['amount'].abs()),
-                                style: const TextStyle(
-                                    fontSize: 28,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Icon(
-                                resource['amount'] > 0
-                                    ? Icons.add
-                                    : Icons.remove,
-                                color: resource['amount'] > 0
-                                    ? const Color.fromRGBO(40, 204, 158, 1)
-                                    : const Color.fromRGBO(255, 51, 102, 1),
-                              ),
-                            ],
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(56)),
+                          child: Icon(
+                            IconData(int.parse(resource['icon']),
+                                fontFamily: 'MaterialIcons'),
+                            color: Color(int.parse(resource['color'])),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(56)),
-                      child: Icon(
-                        IconData(int.parse(resource['icon']),
-                            fontFamily: 'MaterialIcons'),
-                        color: Color(int.parse(resource['color'])),
+                      margin: const EdgeInsets.only(top: 12),
+                      child: Row(
+                        children: [
+                          Text(
+                            Amount.toSeparator(resource['amount'].abs()),
+                            style: const TextStyle(
+                                fontSize: 28,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          if (resource['amount'] != 0)
+                            resource['amount'] > 0
+                                ? const Icon(
+                                    Icons.add,
+                                    color: Color.fromRGBO(40, 204, 158, 1),
+                                  )
+                                : const Icon(
+                                    Icons.remove,
+                                    color: Color.fromRGBO(255, 51, 102, 1),
+                                  )
+                        ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),

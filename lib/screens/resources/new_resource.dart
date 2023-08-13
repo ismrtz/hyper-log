@@ -147,23 +147,31 @@ class _NewResourceState extends State<NewResource> {
   Future<void> getResources() async {
     final result = await _resourcesSqliteService.getResources(null);
     addResourceAmountTxn(result).whenComplete(() {
-      updateBalance();
+      updateBalanceAndResources();
       showSuccessfulMessage();
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop();
     });
   }
 
-  void updateBalance() {
+  void updateBalanceAndResources() {
     final account = Provider.of<Account>(context, listen: false);
-    account.getBalance();
+    account.getBalanceByType();
+    account.getResources();
+    account.getReceiptCategoires();
+  }
+
+  String dateTimeNow() {
+    DateTime now = DateTime.now();
+
+    return "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}T${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}Z";
   }
 
   Future<void> addResourceAmountTxn(List resources) async {
     final transaction = model.Transaction(
       amount: int.parse(_amountController.text),
-      categoryId: 5,
+      categoryId: 16,
       resourceId: resources.isEmpty ? 1 : resources.length,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
+      createdAt: dateTimeNow(),
       description: '',
     );
     return await _transactionsSqliteService.insertTransaction(transaction);

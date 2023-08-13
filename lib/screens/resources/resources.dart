@@ -1,14 +1,18 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // screens
 import 'new_resource.dart';
+
+// providers
+import 'package:hyper_log/providers/account.dart';
 
 // widgets
 import 'package:hyper_log/widgets/resource/resource_card.dart';
 
 // services
-import 'package:hyper_log/services/transactions_sqlite_service.dart';
+// import 'package:hyper_log/services/transactions_sqlite_service.dart';
 
 class Resources extends StatefulWidget {
   const Resources({super.key});
@@ -22,34 +26,34 @@ class Resources extends StatefulWidget {
 class _ResourcesState extends State<Resources> {
   bool isActiveBankTab = true;
 
-  List<Map> resources = [];
+  // List<Map> resources = [];
 
-  late TransactionsSqliteService _transactionsSqliteService;
+  // late TransactionsSqliteService _transactionsSqliteService;
 
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    _transactionsSqliteService = TransactionsSqliteService();
+  // _transactionsSqliteService = TransactionsSqliteService();
 
-    getResources();
-  }
+  // getResources();
+  // }
 
-  Future<void> getResources() async {
-    final result =
-        await _transactionsSqliteService.getResourcesWithCredit(null);
-    setState(() {
-      resources = result;
-    });
-  }
+  // Future<void> getResources() async {
+  //   final result =
+  //       await _transactionsSqliteService.getResourcesWithCredit(null);
+  //   setState(() {
+  //     resources = result;
+  //   });
+  // }
 
-  List<Map> get bankResources {
-    return resources.where((resource) => resource['type'] == 1).toList();
-  }
+  // List<Map> get bankResources {
+  //   return resources.where((resource) => resource['type'] == 1).toList();
+  // }
 
-  List<Map> get cashResources {
-    return resources.where((resource) => resource['type'] == 0).toList();
-  }
+  // List<Map> get cashResources {
+  //   return resources.where((resource) => resource['type'] == 0).toList();
+  // }
 
   void _backScreen(BuildContext context) {
     Navigator.of(context).pop();
@@ -72,13 +76,13 @@ class _ResourcesState extends State<Resources> {
   }
 
   void _openNewResourcePage(BuildContext context) {
-    Navigator.of(context).pushNamed(NewResource.routeName).then(
-        (isSuccessfulAdded) =>
-            isSuccessfulAdded == true ? getResources() : null);
+    Navigator.of(context).pushNamed(NewResource.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
+    final account = Provider.of<Account>(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -212,17 +216,19 @@ class _ResourcesState extends State<Resources> {
                         child: ListView.builder(
                             padding: const EdgeInsets.all(24),
                             itemCount: isActiveBankTab
-                                ? bankResources.length
-                                : cashResources.length,
+                                ? account.bankResources.length
+                                : account.cashResources.length,
                             itemBuilder: (context, index) => Directionality(
                                   textDirection: TextDirection.rtl,
                                   child: Column(
                                     children: [
                                       ResourceCard(
                                         resource: isActiveBankTab
-                                            ? bankResources[index]
-                                            : cashResources[index],
+                                            ? account.bankResources[index]
+                                            : account.cashResources[index],
                                         selectResource: () {},
+                                        margin:
+                                            const EdgeInsets.only(bottom: 16),
                                       )
                                     ],
                                   ),

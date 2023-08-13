@@ -40,10 +40,13 @@ class _ExpenseAccountState extends State<ExpenseAccount> {
             ),
             Row(
               children: [
+                if (account.balance < 0)
+                  const Icon(Icons.remove,
+                      size: 18, color: Color.fromRGBO(255, 51, 102, 1)),
                 Container(
                   margin: const EdgeInsets.only(left: 4),
                   child: Text(
-                    Amount.toSeparator(account.balance),
+                    Amount.toSeparator(account.balance.abs()),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
