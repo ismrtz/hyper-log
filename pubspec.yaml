@@ -11,6 +11,8 @@ dependencies:
   fl_chart: ^0.63.0
   flutter:
     sdk: flutter
+
+  flutter_native_splash: ^2.3.2
   path: ^1.8.3
   provider: ^6.0.5
   shamsi_date: ^1.0.1
@@ -20,19 +22,29 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "dev_assets/hyper-log-icon.png"
+
+flutter_native_splash:
+  color: "#071311"
+  image: "assets/images/hyper-log-image.png"
 
 flutter:
   uses-material-design: true
   fonts:
-  - family: VazirMatn
-    fonts: 
-    - asset: assets/fonts/Vazirmatn-UI-FD-Thin.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-ExtraLight.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-Light.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-regular.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-Medium.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-SemiBold.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-Bold.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-ExtraBold.ttf
-    - asset: assets/fonts/Vazirmatn-UI-FD-Black.ttf
-      weight: 900
+    - family: VazirMatn
+      fonts:
+        - asset: assets/fonts/Vazirmatn-UI-FD-Thin.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-ExtraLight.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-Light.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-regular.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-Medium.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-SemiBold.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-Bold.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-ExtraBold.ttf
+        - asset: assets/fonts/Vazirmatn-UI-FD-Black.ttf
+          weight: 900
