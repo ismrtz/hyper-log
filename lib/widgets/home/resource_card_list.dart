@@ -25,7 +25,7 @@ class _ResourceCardListState extends State<ResourceCardList> {
             ),
             SizedBox(width: 4),
             Text(
-              'منابع خرج',
+              'منابع مالی',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white,

@@ -34,7 +34,7 @@ class _NewResourceState extends State<NewResource> {
     'icon': '0xee33',
   };
   Map selectedResource = {
-    'title': 'نام منبع خرج',
+    'title': 'نام منبع مالی',
     'icon': '0xee33',
   };
 
@@ -119,7 +119,7 @@ class _NewResourceState extends State<NewResource> {
 
   Future<void> addBankResource() async {
     if (selectedResource['color'] == null) {
-      return showMessage('لطفا منبع خرج انتخاب کنید', 'error');
+      return showMessage('لطفا منبع مالی انتخاب کنید', 'error');
     }
 
     if (_formKey.currentState!.validate()) {
@@ -141,7 +141,7 @@ class _NewResourceState extends State<NewResource> {
 
   Future<void> addCashResource() async {
     if (selectedIcon['color'] == null) {
-      return showMessage('لطفا آیکنی برای منبع خرج انتخاب کنید', 'error');
+      return showMessage('لطفا آیکنی برای منبع مالی انتخاب کنید', 'error');
     }
     if (_formKey.currentState!.validate()) {
       final cashResource = Resource(
@@ -206,7 +206,7 @@ class _NewResourceState extends State<NewResource> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'منبع خرج جدید',
+                        'منبع مالی جدید',
                         style: TextStyle(
                             color: Colors.grey[200],
                             fontSize: 20,
@@ -465,7 +465,7 @@ class _NewResourceState extends State<NewResource> {
                                             validator: (value) => value ==
                                                         null ||
                                                     value.isEmpty
-                                                ? 'نام منبع خرج نمی‌تواند خالی باشد'
+                                                ? 'نام منبع مالی نمی‌تواند خالی باشد'
                                                 : null,
                                             inputFormatters: [
                                               LengthLimitingTextInputFormatter(
@@ -517,7 +517,7 @@ class _NewResourceState extends State<NewResource> {
                                               ),
                                               hintStyle: const TextStyle(
                                                   color: Colors.white54),
-                                              hintText: 'نام منبع خرج',
+                                              hintText: 'نام منبع مالی',
                                               enabledBorder:
                                                   const UnderlineInputBorder(
                                                       borderSide: BorderSide(

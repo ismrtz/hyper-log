@@ -48,7 +48,7 @@ class _MoreState extends State<More> {
       'icon': Icons.arrow_downward,
     },
     {
-      'label': 'منابع خرج',
+      'label': 'منابع مالی',
       'route': '/resources',
       'color': Colors.deepPurple[700],
       'icon': Icons.account_balance_wallet_outlined,

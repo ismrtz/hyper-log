@@ -31,7 +31,7 @@ class _BalanceViewState extends State<BalanceView> {
           borderRadius: BorderRadius.circular(24)),
       child: Column(children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(
               height: 170,

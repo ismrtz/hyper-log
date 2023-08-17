@@ -119,7 +119,7 @@ class _ResourcesState extends State<Resources> {
                                   color: Color.fromRGBO(40, 204, 158, 1),
                                   fontSize: 16),
                             )),
-                        Text('منابع خرج',
+                        Text('منابع مالی',
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

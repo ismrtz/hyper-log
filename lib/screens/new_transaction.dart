@@ -1,5 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 // models
@@ -11,6 +12,7 @@ import 'package:hyper_log/models/transaction.dart';
 import 'package:hyper_log/providers/account.dart';
 
 // widgets
+import 'package:hyper_log/widgets/global/toast.dart';
 import 'package:hyper_log/widgets/category/category_list.dart';
 import 'package:hyper_log/widgets/resource/resource_list.dart';
 import 'package:hyper_log/widgets/transaction/transaction_field.dart';
@@ -75,7 +77,7 @@ class _NewTransactionState extends State<NewTransaction> {
     },
     {
       'name': 'resource',
-      'title': 'نام منبع خرج',
+      'title': 'نام منبع مالی',
       'icon': '0xee33',
     },
   ];
@@ -83,12 +85,12 @@ class _NewTransactionState extends State<NewTransaction> {
   List transferFields = [
     {
       'name': 'from',
-      'title': 'از منبع خرج',
+      'title': 'از منبع مالی',
       'icon': '0xee33',
     },
     {
       'name': 'to',
-      'title': 'به منبع خرج',
+      'title': 'به منبع مالی',
       'icon': '0xee33',
     },
   ];
@@ -197,35 +199,47 @@ class _NewTransactionState extends State<NewTransaction> {
     });
   }
 
-  void showSuccessfulMessage() {
-    const snackBar = SnackBar(content: Text('تراکنش با موفقیت ساخته شد✅'));
+  void showMessage(String text, String iconType) {
+    final snackBar = Toast.createToast(text, iconType);
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<void> addNewTransaction() async {
-    if (selectedTransactionType[0]['name'] == 'transfer') {
-      if (transferFields[0]['color'] == null &&
-          transferFields[1]['color'] == null &&
-          _amountController.text == '') return;
-
-      await withdrawNewTransferTxn();
-      await depositeNewTransferTxn().whenComplete(() {
-        updateAccount();
-        showSuccessfulMessage();
-        Navigator.of(context).pop();
-      });
-    } else {
-      if (paymentFields[0]['color'] == null &&
-          paymentFields[1]['color'] == null &&
-          _amountController.text == '') return;
-
-      await addNewPaymentTxn().whenComplete(() {
-        updateAccount();
-        showSuccessfulMessage();
-        Navigator.of(context).pop();
-      });
+  Future<void> addDepositeOrWithdrawTransacion() async {
+    if (_amountController.text == '') {
+      return showMessage('لطفا مبلغی برای تراکنش وارد کنید', 'error');
     }
+    if (paymentFields[0]['color'] == null) {
+      return showMessage('لطفا دسته‌بندی انتخاب کنید', 'error');
+    }
+    if (paymentFields[1]['color'] == null) {
+      return showMessage('لطفا منبع مالی انتخاب کنید', 'error');
+    }
+
+    await addNewPaymentTxn().whenComplete(() {
+      updateAccount();
+      showMessage('تراکنش با موفقیت ساخته شد', 'success');
+      Navigator.of(context).pop();
+    });
+  }
+
+  Future<void> addTransferTransaction() async {
+    if (_amountController.text == '') {
+      return showMessage('لطفا مبلغی برای تراکنش وارد کنید', 'error');
+    }
+    if (transferFields[0]['color'] == null) {
+      return showMessage('لطفا منبع مبدأ انتخاب کنید', 'error');
+    }
+    if (transferFields[1]['color'] == null) {
+      return showMessage('لطفا منبع مقصد انتخاب کنید', 'error');
+    }
+
+    await withdrawNewTransferTxn();
+    await depositeNewTransferTxn().whenComplete(() {
+      updateAccount();
+      showMessage('تراکنش با موفقیت ساخته شد', 'success');
+      Navigator.of(context).pop();
+    });
   }
 
   void updateAccount() {
@@ -322,6 +336,9 @@ class _NewTransactionState extends State<NewTransaction> {
                           Directionality(
                             textDirection: TextDirection.rtl,
                             child: TextField(
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(8)
+                              ],
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 hintStyle:
@@ -467,7 +484,9 @@ class _NewTransactionState extends State<NewTransaction> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(40, 204, 158, 1),
-        onPressed: addNewTransaction,
+        onPressed: selectedTransactionType[0]['name'] == 'transfer'
+            ? addTransferTransaction
+            : addDepositeOrWithdrawTransacion,
         child: const Icon(Icons.done),
       ),
     );

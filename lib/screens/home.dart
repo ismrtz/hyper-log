@@ -73,8 +73,8 @@ class _HomeState extends State<Home> {
                               ? ResourceCardList(resources: resources)
                               : Tips(
                                   title:
-                                      'منبع خرج برای ثبت تراکنش نداری! اضافه کن',
-                                  actionTitle: 'منبع خرج جدید',
+                                      'منبع مالی برای ثبت تراکنش نداری! اضافه کن',
+                                  actionTitle: 'منبع مالی جدید',
                                   acitonCallback: () => Navigator.of(context)
                                       .pushNamed(NewResource.routeName)),
                           if (resources.isNotEmpty)
