@@ -1,17 +1,19 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+// providers
+import 'package:hyper_log/providers/account.dart';
+
 // widgets
+import 'package:hyper_log/widgets/global/toast.dart';
 import '../../widgets/resource/bank_resource_list.dart';
 import '../../widgets/resource/cash_resource_list.dart';
 
 // models
 import 'package:hyper_log/models/resource.dart';
 import 'package:hyper_log/models/transaction.dart' as model;
-
-// providers
-import 'package:hyper_log/providers/account.dart';
 
 // services
 import 'package:hyper_log/services/resources_sqlite_service.dart';
@@ -28,13 +30,11 @@ class NewResource extends StatefulWidget {
 
 class _NewResourceState extends State<NewResource> {
   bool isBank = true;
-
-  Map selectedResource = {
-    'title': 'نام منبع خرج',
+  Map selectedIcon = {
     'icon': '0xee33',
   };
-
-  Map selectedIcon = {
+  Map selectedResource = {
+    'title': 'نام منبع خرج',
     'icon': '0xee33',
   };
 
@@ -111,9 +111,18 @@ class _NewResourceState extends State<NewResource> {
     });
   }
 
+  void showMessage(String text, String iconType) {
+    final snackBar = Toast.createToast(text, iconType);
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Future<void> addBankResource() async {
-    if (_formKey.currentState!.validate() ||
-        selectedResource['color'] != null) {
+    if (selectedResource['color'] == null) {
+      return showMessage('لطفا منبع خرج انتخاب کنید', 'error');
+    }
+
+    if (_formKey.currentState!.validate()) {
       final bankResource = Resource(
         title: selectedResource['title'],
         type: 1,
@@ -131,7 +140,10 @@ class _NewResourceState extends State<NewResource> {
   }
 
   Future<void> addCashResource() async {
-    if (_formKey.currentState!.validate() && selectedIcon['color'] != null) {
+    if (selectedIcon['color'] == null) {
+      return showMessage('لطفا آیکنی برای منبع خرج انتخاب کنید', 'error');
+    }
+    if (_formKey.currentState!.validate()) {
       final cashResource = Resource(
           title: _resourceTitleController.text,
           type: 0,
@@ -148,7 +160,7 @@ class _NewResourceState extends State<NewResource> {
     final result = await _resourcesSqliteService.getResources(null);
     addResourceAmountTxn(result).whenComplete(() {
       updateBalanceAndResources();
-      showSuccessfulMessage();
+      showMessage('منبع با موفقیت ساخته شد', 'success');
       Navigator.of(context).pop();
     });
   }
@@ -175,12 +187,6 @@ class _NewResourceState extends State<NewResource> {
       description: '',
     );
     return await _transactionsSqliteService.insertTransaction(transaction);
-  }
-
-  void showSuccessfulMessage() {
-    const snackBar = SnackBar(content: Text('منبع با موفقیت ساخته شد✅'));
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -220,11 +226,9 @@ class _NewResourceState extends State<NewResource> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
                   height: MediaQuery.of(context).size.height - 146,
-                  decoration: const BoxDecoration(
-                      color: Color.fromRGBO(12, 29, 27, 1),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24))),
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(12, 29, 27, 1),
+                      borderRadius: BorderRadius.circular(24)),
                   child: Column(
                     children: [
                       Row(
@@ -356,6 +360,9 @@ class _NewResourceState extends State<NewResource> {
                                               value == '0'
                                           ? 'موجودی نمی‌تواند صفر یا خالی باشد'
                                           : null,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(10)
+                                      ],
                                       keyboardType: TextInputType.number,
                                       decoration: const InputDecoration(
                                         enabledBorder: UnderlineInputBorder(
@@ -388,7 +395,15 @@ class _NewResourceState extends State<NewResource> {
                                     Divider(
                                       color: Colors.grey[800],
                                     ),
-                                    TextField(
+                                    TextFormField(
+                                      validator: (value) => value == null ||
+                                              value.isEmpty
+                                          ? 'شماره کارت نمی‌تواند خالی باشد'
+                                          : value != '0' &&
+                                                  (value.length > 16 ||
+                                                      value.length < 16)
+                                              ? 'شماره کارت باید 16 رقم باشد'
+                                              : null,
                                       keyboardType: TextInputType.number,
                                       decoration: const InputDecoration(
                                         enabledBorder: UnderlineInputBorder(
@@ -413,7 +428,13 @@ class _NewResourceState extends State<NewResource> {
                                     Divider(
                                       color: Colors.grey[800],
                                     ),
-                                    TextField(
+                                    TextFormField(
+                                      validator: (value) => value == null ||
+                                              value.isEmpty
+                                          ? 'شماره حساب نمی‌تواند خالی باشد'
+                                          : value != '0' && value.length < 10
+                                              ? 'شماره حساب حداقل باید 11 رقم باشد'
+                                              : null,
                                       keyboardType: TextInputType.number,
                                       decoration: const InputDecoration(
                                         enabledBorder: UnderlineInputBorder(

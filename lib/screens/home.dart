@@ -77,9 +77,10 @@ class _HomeState extends State<Home> {
                                   actionTitle: 'منبع خرج جدید',
                                   acitonCallback: () => Navigator.of(context)
                                       .pushNamed(NewResource.routeName)),
-                          const Padding(
-                              padding: EdgeInsets.only(top: 32),
-                              child: PaymentCategoriesChart())
+                          if (resources.isNotEmpty)
+                            const Padding(
+                                padding: EdgeInsets.only(top: 32),
+                                child: PaymentCategoriesChart())
                         ]),
                       ),
                     ]),
