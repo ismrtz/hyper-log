@@ -432,8 +432,8 @@ class _NewResourceState extends State<NewResource> {
                                       validator: (value) => value == null ||
                                               value.isEmpty
                                           ? 'شماره حساب نمی‌تواند خالی باشد'
-                                          : value != '0' && value.length < 10
-                                              ? 'شماره حساب حداقل باید 11 رقم باشد'
+                                          : value != '0' && value.length > 14
+                                              ? 'شماره حساب حداکثر باید 13 رقم باشد'
                                               : null,
                                       keyboardType: TextInputType.number,
                                       decoration: const InputDecoration(
@@ -467,6 +467,10 @@ class _NewResourceState extends State<NewResource> {
                                                     value.isEmpty
                                                 ? 'نام منبع خرج نمی‌تواند خالی باشد'
                                                 : null,
+                                            inputFormatters: [
+                                              LengthLimitingTextInputFormatter(
+                                                  25)
+                                            ],
                                             keyboardType: TextInputType.name,
                                             decoration: InputDecoration(
                                               contentPadding:

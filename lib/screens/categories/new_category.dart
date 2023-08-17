@@ -1,5 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // models
 import 'package:hyper_log/models/category.dart';
@@ -225,6 +226,9 @@ class _NewCategoryState extends State<NewCategory> {
                                   }
                                   return null;
                                 },
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(30)
+                                ],
                                 keyboardType: TextInputType.name,
                                 decoration: InputDecoration(
                                   contentPadding:
