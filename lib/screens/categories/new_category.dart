@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hyper_log/models/category.dart';
 
 // widgets
+import 'package:hyper_log/widgets/global/toast.dart';
 import 'package:hyper_log/widgets/global/icon_picker.dart';
 
 // services
@@ -54,6 +55,12 @@ class _NewCategoryState extends State<NewCategory> {
     });
   }
 
+  void showMessage(String text, String iconType) {
+    final snackBar = Toast.createToast(text, iconType);
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   void _tapCategoryIcon(BuildContext context) {
     showModalBottomSheet(
         showDragHandle: true,
@@ -78,7 +85,11 @@ class _NewCategoryState extends State<NewCategory> {
   }
 
   Future<void> addNewCategory() async {
-    if (_formKey.currentState!.validate() && selectedIcon['color'] != null) {
+    if (selectedIcon['color'] == null) {
+      return showMessage('لطفا آیکنی برای دسته‌بندی انتخاب کنید', 'error');
+    }
+
+    if (_formKey.currentState!.validate()) {
       final cashResource = Category(
           title: _categoryTitleController.text,
           type: isReceipt ? 1 : 0,
@@ -89,16 +100,10 @@ class _NewCategoryState extends State<NewCategory> {
           _categoriesSqliteService
               .insertCategory(cashResource)
               .whenComplete(() {
-            showSuccessfulMessage();
+            showMessage('دسته‌بندی با موفقیت ساخته شد', 'success');
             Navigator.of(context).pop(true);
           }));
     }
-  }
-
-  void showSuccessfulMessage() {
-    const snackBar = SnackBar(content: Text('✅ دسته‌بندی با موفقیت ساخته شد'));
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -138,11 +143,9 @@ class _NewCategoryState extends State<NewCategory> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
                   height: MediaQuery.of(context).size.height - 146,
-                  decoration: const BoxDecoration(
-                      color: Color.fromRGBO(12, 29, 27, 1),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24))),
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(12, 29, 27, 1),
+                      borderRadius: BorderRadius.circular(24)),
                   child: Column(
                     children: [
                       Row(
