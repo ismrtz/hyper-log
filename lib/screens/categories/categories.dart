@@ -129,11 +129,9 @@ class _CategoriesState extends State<Categories> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   height: MediaQuery.of(context).size.height - 146,
-                  decoration: const BoxDecoration(
-                      color: Color.fromRGBO(12, 29, 27, 1),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24))),
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(12, 29, 27, 1),
+                      borderRadius: BorderRadius.circular(24)),
                   child: Column(children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),

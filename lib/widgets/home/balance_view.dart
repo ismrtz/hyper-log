@@ -1,5 +1,7 @@
 // packages
 import 'package:flutter/material.dart';
+
+// screens
 import 'package:hyper_log/screens/dashboard.dart';
 
 // widgets
@@ -55,9 +57,11 @@ class _BalanceViewState extends State<BalanceView> {
                                   : const Color.fromRGBO(19, 47, 43, 1))),
                       onPressed: button['disabled']
                           ? null
-                          : () => setState(() {
+                          : () {
+                              setState(() {
                                 selectedButtonIndex = index;
-                              }),
+                              });
+                            },
                       child: Text(
                         button['label'],
                         style: TextStyle(

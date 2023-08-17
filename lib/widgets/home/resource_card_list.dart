@@ -1,5 +1,7 @@
 // packages
 import 'package:flutter/material.dart';
+
+// widgets
 import 'package:hyper_log/widgets/resource/resource_card.dart';
 
 class ResourceCardList extends StatefulWidget {

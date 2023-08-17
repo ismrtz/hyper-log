@@ -1,5 +1,7 @@
 // packages
 import 'package:flutter/material.dart';
+
+// data
 import 'package:hyper_log/data/bank_list.dart';
 
 class BankResourceList extends StatelessWidget {

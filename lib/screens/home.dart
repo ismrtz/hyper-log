@@ -1,7 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hyper_log/widgets/home/balance_view.dart';
 import 'package:provider/provider.dart';
 
 // providers
@@ -12,6 +11,7 @@ import 'package:hyper_log/screens/resources/new_resource.dart';
 
 // widgets
 import 'package:hyper_log/widgets/global/tips.dart';
+import 'package:hyper_log/widgets/home/balance_view.dart';
 import 'package:hyper_log/widgets/home/expense_account.dart';
 import 'package:hyper_log/widgets/home/resource_card_list.dart';
 import 'package:hyper_log/widgets/global/payment_categoires_chart.dart';

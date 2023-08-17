@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
+//utils
+import 'package:hyper_log/utils/amount.dart';
+
 // providers
 import 'package:hyper_log/providers/account.dart';
 
@@ -31,7 +34,7 @@ class _BalanceChartState extends State<BalanceChart> {
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
                 Text(
-                  account.balance.toString(),
+                  Amount.toSeparator(account.balance),
                   style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -63,13 +66,13 @@ class _BalanceChartState extends State<BalanceChart> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 6, horizontal: 10),
                           child: Text(
-                            '${account.withdraw.toString()} تومان',
+                            '${Amount.toSeparator(account.withdraw.abs())} تومان',
                             style: const TextStyle(
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        badgePositionPercentageOffset: 1),
+                        badgePositionPercentageOffset: 0.7),
                     PieChartSectionData(
                         value: account.deposite == 0
                             ? 1
@@ -83,13 +86,13 @@ class _BalanceChartState extends State<BalanceChart> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 6, horizontal: 10),
                           child: Text(
-                            '${account.deposite.toString()} تومان',
+                            '${Amount.toSeparator(account.deposite)} تومان',
                             style: const TextStyle(
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        badgePositionPercentageOffset: 1)
+                        badgePositionPercentageOffset: 0.8)
                   ],
                 ),
                 swapAnimationDuration: const Duration(milliseconds: 300),

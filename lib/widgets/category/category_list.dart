@@ -1,11 +1,11 @@
+// widgets
+import 'category_item.dart';
+
 // models
 import '../../models/category.dart';
 
 // packages
 import 'package:flutter/material.dart';
-
-// widgets
-import 'category_item.dart';
 
 class CategoryList extends StatelessWidget {
   const CategoryList(

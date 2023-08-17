@@ -1,8 +1,9 @@
-// models
-import 'package:hyper_log/models/category.dart';
 // packages
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+// models
+import 'package:hyper_log/models/category.dart';
 
 class CategoriesSqliteService {
   Future initializeDB() async {

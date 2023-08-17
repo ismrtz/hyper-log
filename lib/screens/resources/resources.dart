@@ -11,9 +11,6 @@ import 'package:hyper_log/providers/account.dart';
 // widgets
 import 'package:hyper_log/widgets/resource/resource_card.dart';
 
-// services
-// import 'package:hyper_log/services/transactions_sqlite_service.dart';
-
 class Resources extends StatefulWidget {
   const Resources({super.key});
 
@@ -25,35 +22,6 @@ class Resources extends StatefulWidget {
 
 class _ResourcesState extends State<Resources> {
   bool isActiveBankTab = true;
-
-  // List<Map> resources = [];
-
-  // late TransactionsSqliteService _transactionsSqliteService;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  // _transactionsSqliteService = TransactionsSqliteService();
-
-  // getResources();
-  // }
-
-  // Future<void> getResources() async {
-  //   final result =
-  //       await _transactionsSqliteService.getResourcesWithCredit(null);
-  //   setState(() {
-  //     resources = result;
-  //   });
-  // }
-
-  // List<Map> get bankResources {
-  //   return resources.where((resource) => resource['type'] == 1).toList();
-  // }
-
-  // List<Map> get cashResources {
-  //   return resources.where((resource) => resource['type'] == 0).toList();
-  // }
 
   void _backScreen(BuildContext context) {
     Navigator.of(context).pop();
@@ -137,11 +105,9 @@ class _ResourcesState extends State<Resources> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   height: MediaQuery.of(context).size.height - 146,
-                  decoration: const BoxDecoration(
-                      color: Color.fromRGBO(12, 29, 27, 1),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24))),
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(12, 29, 27, 1),
+                      borderRadius: BorderRadius.circular(24)),
                   child: Column(children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),

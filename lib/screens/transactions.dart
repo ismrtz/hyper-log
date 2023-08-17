@@ -1,6 +1,8 @@
 // packages
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+
+// services
 import 'package:hyper_log/services/transactions_sqlite_service.dart';
 
 // widgets
@@ -80,7 +82,6 @@ class _TransactionsState extends State<Transactions> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 206,
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.only(top: 12),
                         child: Column(children: [
                           const BalanceDetails(),
                           const Padding(

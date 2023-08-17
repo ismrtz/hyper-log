@@ -150,8 +150,8 @@ class _NewTransactionState extends State<NewTransaction> {
         ? CategoryList(
             height: 360, categories: categories, selectCategory: selectCategory)
         : ResourceList(
-            field: fieldName,
             height: 360,
+            field: fieldName,
             resources: resources,
             selectResource: selectResource);
     showModalBottomSheet(

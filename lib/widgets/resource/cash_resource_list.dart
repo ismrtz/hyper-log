@@ -1,4 +1,7 @@
+// packages
 import 'package:flutter/material.dart';
+
+// data
 import 'package:hyper_log/data/cash_list.dart';
 
 class CashResourceList extends StatelessWidget {

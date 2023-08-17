@@ -57,18 +57,16 @@ class _ToolsState extends State<Tools> {
                 Container(
                     padding: const EdgeInsets.all(24),
                     height: MediaQuery.of(context).size.height - 206,
-                    decoration: const BoxDecoration(
-                        color: Color.fromRGBO(12, 29, 27, 1),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(24),
-                            topRight: Radius.circular(24))),
+                    decoration: BoxDecoration(
+                        color: const Color.fromRGBO(12, 29, 27, 1),
+                        borderRadius: BorderRadius.circular(24)),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: tools
                           .map((tool) => Container(
-                                width: 160,
-                                height: 112,
+                                constraints: const BoxConstraints(
+                                    maxWidth: 160, maxHeight: 112),
                                 decoration: BoxDecoration(
                                     color: tool['color'],
                                     borderRadius: BorderRadius.circular(24)),

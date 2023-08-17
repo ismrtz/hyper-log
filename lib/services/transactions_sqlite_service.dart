@@ -1,9 +1,9 @@
-// models
-import 'package:hyper_log/models/transaction.dart' as model;
-
 // packages
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+// models
+import 'package:hyper_log/models/transaction.dart' as model;
 
 class TransactionsSqliteService {
   Future initializeDB() async {
