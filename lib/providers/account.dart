@@ -28,8 +28,8 @@ class Account with ChangeNotifier {
     return _resources.where((resource) => resource['type'] == 0).toList();
   }
 
-  Future<void> getBalanceByType() async {
-    final result = await _transactionsSqliteService.getAmountByType();
+  Future<void> getBalanceByType(String days) async {
+    final result = await _transactionsSqliteService.getAmountByType(days);
     if (result.isNotEmpty) {
       // ignore: unnecessary_null_comparison
       _deposite = result[0]['amount'] > 0

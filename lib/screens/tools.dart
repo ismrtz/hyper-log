@@ -23,6 +23,31 @@ class _ToolsState extends State<Tools> {
     },
   ];
 
+  // void showTipsModal() {
+  //   final Widget tips = Container(
+  //     height: 300,
+  //     child: Column(
+  //       children: [
+  //         Text(
+  //           'سلام',
+  //           style: TextStyle(color: Colors.red),
+  //         )
+  //       ],
+  //     ),
+  //   );
+
+  //   showModalBottomSheet(
+  //       showDragHandle: true,
+  //       shape: const RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.only(
+  //               topLeft: Radius.circular(24), topRight: Radius.circular(24))),
+  //       backgroundColor: const Color.fromRGBO(12, 29, 27, 1),
+  //       context: context,
+  //       builder: (_) {
+  //         return GestureDetector(child: tips);
+  //       });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,11 +69,11 @@ class _ToolsState extends State<Tools> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey.shade200)),
-                        IconButton(
-                          onPressed: () {},
+                        const IconButton(
+                          onPressed: null,
                           icon: Icon(
-                            Icons.help_outline_outlined,
-                            color: Colors.grey.shade200,
+                            Icons.info_outline_rounded,
+                            color: Colors.grey,
                             size: 32,
                           ),
                         ),
@@ -84,12 +109,35 @@ class _ToolsState extends State<Tools> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            tool['title'],
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                tool['title'],
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 4),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                child: const Text(
+                                                  'بزودی',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                           Row(
                                               mainAxisAlignment:

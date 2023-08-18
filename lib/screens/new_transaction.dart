@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+// providers
+import 'package:hyper_log/providers/account.dart';
+
 // models
 import 'package:hyper_log/models/category.dart';
 import 'package:hyper_log/models/resource.dart';
 import 'package:hyper_log/models/transaction.dart';
-
-// providers
-import 'package:hyper_log/providers/account.dart';
 
 // widgets
 import 'package:hyper_log/widgets/global/toast.dart';
@@ -244,7 +244,7 @@ class _NewTransactionState extends State<NewTransaction> {
 
   void updateAccount() {
     final account = Provider.of<Account>(context, listen: false);
-    account.getBalanceByType();
+    account.getBalanceByType('-30');
     account.getResources();
     selectedTransactionType[0]['name'] == 'payment'
         ? account.getPaymentCategoires()

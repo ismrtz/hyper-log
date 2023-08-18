@@ -22,11 +22,11 @@ class TransactionsSqliteService {
     );
   }
 
-  Future<List<Map>> getAmountByType() async {
+  Future<List<Map>> getAmountByType(String days) async {
     final Database db = await initializeDB();
 
     final List<Map<String, dynamic>> queryResult = await db.rawQuery(
-        'SELECT c.type, SUM(amount) AS [amount] FROM Transactions txn JOIN Categories c ON c.id = txn.categoryId GROUP BY c.type');
+        "SELECT c.type, SUM(amount) AS [amount] FROM Transactions txn JOIN Categories c ON c.id = txn.categoryId WHERE DATE(txn.createdAt) BETWEEN datetime('now', '$days days') AND datetime('now', 'localtime') GROUP BY c.type");
 
     return List.generate(queryResult.length,
         (index) => {'amount': queryResult[index]['amount']});

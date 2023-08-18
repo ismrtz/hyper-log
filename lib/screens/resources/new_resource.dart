@@ -167,7 +167,7 @@ class _NewResourceState extends State<NewResource> {
 
   void updateBalanceAndResources() {
     final account = Provider.of<Account>(context, listen: false);
-    account.getBalanceByType();
+    account.getBalanceByType('-30');
     account.getResources();
     account.getReceiptCategoires();
   }

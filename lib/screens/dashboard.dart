@@ -59,7 +59,7 @@ class _DashboardState extends State<Dashboard> {
 
     final account = Provider.of<Account>(context, listen: false);
 
-    account.getBalanceByType();
+    account.getBalanceByType('-30');
     account.getPaymentCategoires();
     account.getReceiptCategoires();
     account.getResources();

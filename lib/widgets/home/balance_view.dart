@@ -1,5 +1,9 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+// providers
+import 'package:hyper_log/providers/account.dart';
 
 // screens
 import 'package:hyper_log/screens/dashboard.dart';
@@ -18,9 +22,27 @@ class _BalanceViewState extends State<BalanceView> {
   int selectedButtonIndex = 0;
   List<Map> buttons = [
     {'name': 'settings', 'label': 'همین ماه', 'disabled': false},
-    {'name': 'profile', 'label': 'همین هفته', 'disabled': true},
-    {'name': 'tip', 'label': 'امروز', 'disabled': true}
+    {'name': 'profile', 'label': 'همین هفته', 'disabled': false},
+    {'name': 'tip', 'label': 'امروز', 'disabled': false}
   ];
+
+  selectBalanceByDate(int index) {
+    if (selectedButtonIndex == index) return;
+
+    final filterDays = selectedButtonIndex == 0
+        ? '-30'
+        : selectedButtonIndex == 1
+            ? '-7'
+            : '-1';
+
+    final account = Provider.of<Account>(context, listen: false);
+
+    account.getBalanceByType(filterDays);
+
+    setState(() {
+      selectedButtonIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +79,7 @@ class _BalanceViewState extends State<BalanceView> {
                                   : const Color.fromRGBO(19, 47, 43, 1))),
                       onPressed: button['disabled']
                           ? null
-                          : () {
-                              setState(() {
-                                selectedButtonIndex = index;
-                              });
-                            },
+                          : () => selectBalanceByDate(index),
                       child: Text(
                         button['label'],
                         style: TextStyle(
