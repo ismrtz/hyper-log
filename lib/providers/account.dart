@@ -30,6 +30,7 @@ class Account with ChangeNotifier {
 
   Future<void> getBalanceByType(String days) async {
     final result = await _transactionsSqliteService.getAmountByType(days);
+
     if (result.isNotEmpty) {
       // ignore: unnecessary_null_comparison
       _deposite = result[0]['amount'] > 0

@@ -29,6 +29,10 @@ class _BalanceViewState extends State<BalanceView> {
   selectBalanceByDate(int index) {
     if (selectedButtonIndex == index) return;
 
+    setState(() {
+      selectedButtonIndex = index;
+    });
+
     final filterDays = selectedButtonIndex == 0
         ? '-30'
         : selectedButtonIndex == 1
@@ -38,10 +42,6 @@ class _BalanceViewState extends State<BalanceView> {
     final account = Provider.of<Account>(context, listen: false);
 
     account.getBalanceByType(filterDays);
-
-    setState(() {
-      selectedButtonIndex = index;
-    });
   }
 
   @override

@@ -66,7 +66,7 @@ class _TransactionsState extends State<Transactions> {
                                       EdgeInsets.symmetric(
                                           vertical: 10, horizontal: 16)),
                                 ),
-                                onPressed: () {},
+                                onPressed: null,
                                 icon: const Icon(
                                   Icons.filter_alt_outlined,
                                   color: Color.fromRGBO(40, 204, 158, 1),
