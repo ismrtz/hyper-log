@@ -2,8 +2,8 @@
 import './home.dart';
 import './more.dart';
 import './tools.dart';
-import './transactions.dart';
-import './new_transaction.dart';
+import 'transactions/transactions.dart';
+import 'transactions/new_transaction.dart';
 
 // packages
 import 'package:flutter/material.dart';

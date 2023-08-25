@@ -18,7 +18,7 @@ import 'package:hyper_log/widgets/resource/resource_list.dart';
 import 'package:hyper_log/widgets/transaction/transaction_field.dart';
 
 // services
-import '../../services/categories_sqlite_service.dart';
+import '../../../services/categories_sqlite_service.dart';
 import 'package:hyper_log/services/resources_sqlite_service.dart';
 import 'package:hyper_log/services/transactions_sqlite_service.dart';
 

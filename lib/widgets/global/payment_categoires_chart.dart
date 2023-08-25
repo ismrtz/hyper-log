@@ -10,7 +10,7 @@ import 'package:hyper_log/providers/account.dart';
 import 'package:hyper_log/widgets/global/tips.dart';
 
 // screens
-import 'package:hyper_log/screens/new_transaction.dart';
+import 'package:hyper_log/screens/transactions/new_transaction.dart';
 
 class PaymentCategoriesChart extends StatefulWidget {
   const PaymentCategoriesChart({super.key});

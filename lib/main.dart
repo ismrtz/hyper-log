@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 
 //screens
 import './screens/dashboard.dart';
-import './screens/new_transaction.dart';
 import './screens/resources/resources.dart';
 import './screens/categories/categories.dart';
 import './screens/resources/new_resource.dart';
 import './screens/categories/new_category.dart';
+import 'screens/transactions/new_transaction.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
