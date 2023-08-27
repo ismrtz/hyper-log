@@ -60,23 +60,23 @@ class _TransactionsState extends State<Transactions> {
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.grey.shade200)),
-                            TextButton.icon(
-                                style: const ButtonStyle(
-                                  padding: MaterialStatePropertyAll(
-                                      EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 16)),
-                                ),
-                                onPressed: null,
-                                icon: const Icon(
-                                  Icons.filter_alt_outlined,
-                                  color: Color.fromRGBO(40, 204, 158, 1),
-                                ),
-                                label: const Text(
-                                  'فیلتر',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(40, 204, 158, 1),
-                                      fontSize: 16),
-                                )),
+                            // TextButton.icon(
+                            //     style: const ButtonStyle(
+                            //       padding: MaterialStatePropertyAll(
+                            //           EdgeInsets.symmetric(
+                            //               vertical: 10, horizontal: 16)),
+                            //     ),
+                            //     onPressed: null,
+                            //     icon: const Icon(
+                            //       Icons.filter_alt_outlined,
+                            //       color: Color.fromRGBO(40, 204, 158, 1),
+                            //     ),
+                            //     label: const Text(
+                            //       'فیلتر',
+                            //       style: TextStyle(
+                            //           color: Color.fromRGBO(40, 204, 158, 1),
+                            //           fontSize: 16),
+                            //     )),
                           ]),
                     ),
                     SizedBox(

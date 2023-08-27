@@ -396,12 +396,13 @@ class _NewResourceState extends State<NewResource> {
                                       color: Colors.grey[800],
                                     ),
                                     TextFormField(
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(16)
+                                      ],
                                       validator: (value) => value == null ||
                                               value.isEmpty
                                           ? 'شماره کارت نمی‌تواند خالی باشد'
-                                          : value != '0' &&
-                                                  (value.length > 16 ||
-                                                      value.length < 16)
+                                          : value != '0' && value.length < 16
                                               ? 'شماره کارت باید 16 رقم باشد'
                                               : null,
                                       keyboardType: TextInputType.number,
@@ -429,11 +430,12 @@ class _NewResourceState extends State<NewResource> {
                                       color: Colors.grey[800],
                                     ),
                                     TextFormField(
-                                      validator: (value) => value == null ||
-                                              value.isEmpty
-                                          ? 'شماره حساب نمی‌تواند خالی باشد'
-                                          : value != '0' && value.length > 14
-                                              ? 'شماره حساب حداکثر باید 13 رقم باشد'
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(13)
+                                      ],
+                                      validator: (value) =>
+                                          value == null || value.isEmpty
+                                              ? 'شماره حساب نمی‌تواند خالی باشد'
                                               : null,
                                       keyboardType: TextInputType.number,
                                       decoration: const InputDecoration(
@@ -445,7 +447,8 @@ class _NewResourceState extends State<NewResource> {
                                                 color: Colors.transparent)),
                                         prefixText: 'شماره حساب:',
                                         prefixStyle: TextStyle(
-                                            color: Colors.grey,
+                                            color: Color.fromRGBO(
+                                                158, 158, 158, 1),
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),
                                       ),
