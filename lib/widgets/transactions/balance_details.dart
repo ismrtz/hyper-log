@@ -51,7 +51,7 @@ class _BalanceDetailsState extends State<BalanceDetails> {
             ),
             const SizedBox(width: 20),
             TrnsactionsCard(
-              amount: account.deposite,
+              amount: account.deposit,
               title: 'دریافتی دوره:',
               color: const Color.fromRGBO(40, 204, 158, 1),
             ),
